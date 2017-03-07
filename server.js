@@ -10,6 +10,13 @@ var config = require('./config/config');
 var User = require('./models/users');
 var app=express();
 const PORT=process.env.PORT || 3000;
+app.use(function (req, res, next){
+  if (req.headers['x-forwarded-proto'] === 'http') {
+    next();
+  } else {
+    res.redirect('http://' + req.hostname + req.url);
+  }
+});
 //Log requests to console
 app.use(morgan('dev'));
 // parse application/x-www-form-urlencoded
