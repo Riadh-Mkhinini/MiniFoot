@@ -25,6 +25,8 @@ app.use('/api',authRouter);
 app.get('/api',passport.authenticate('jwt',{session:false}),function(req,res){
   res.send("hello");
 });
-
+app.get('/',function(req,res){
+  res.send("welcome to my api");
+});
 app.listen(PORT);
 console.log("Listen on port "+ PORT);
