@@ -2,31 +2,21 @@ var mongoose=require('mongoose');
 var bcrypt=require('bcrypt-nodejs');
 
 var userSchema=new mongoose.Schema({
-  firstname:{
-    type:String,
-    required:true
-  },
-  lastname:{
-    type:String,
-    required:true
-  },
+  firstname:{type:String, required:true},
+  lastname:{type:String, required:true},
   address:String,
   city:String,
   photo:String,
   phone:Number,
-  email:{
-    type:String,
-    unique:true,
-    required:true
-  },
-  password:{
-    type:String,
-    required:true
-  },
-  role:{
-    type:String,
-    enume:['Joueur','Manager'],
-    default:'Joueur'
+  email:{type:String,unique:true,required:true},
+  password:{type:String,required:true},
+  role:{type:String,enume:['Joueur','Manager'],default:'Joueur'},
+  joueur:{
+      poste:String,
+      taille:Number,
+      poid:Number,
+      age :Number,
+      type:{type:String,enume:['Joueur','Responsable','Adjoint'],default:'Joueur'}
   }
 });
 

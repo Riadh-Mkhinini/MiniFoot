@@ -21,9 +21,7 @@ exports.userRegister=function (req,res) {
       password: req.body.password,
       firstname:req.body.firstname,
       lastname:req.body.lastname,
-      address:req.body.address,
-      city:req.body.city,
-      phone:req.body.phone
+      address:req.body.address
     });
     newUser.password=newUser.generateHash(req.body.password);
     // save the user
