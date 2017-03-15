@@ -39,17 +39,17 @@ exports.userAuth=function(req, res) {
   }, function(err, user) {
     if (err) throw err;
     if (!user) {
-      res.status(401).json({ success: false, message: 'Authentication failed. User not found.' });
+      res.json({ success: false, message: 'Authentication failed. User not found.' });
     } else {
       // Check if password matches
         if (!user.validPassword(req.body.password)) {
-            res.status(401).json({ success: false, message: 'Authentication failed. Password did not match !' });
+            res.json({ success: false, message: 'Authentication failed. Password did not match !' });
           }
           else{
             var token = jwt.sign(user, config.secret, {
               expiresIn: 2592000 // in seconds
             });
-            res.status(200).json({ success: true, token: 'JWT ' + token });
+            res.status(200).json({ success: true, token: 'JWT ' + token, user:user });
           }
         }
   });
