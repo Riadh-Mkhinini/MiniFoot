@@ -14,7 +14,7 @@ var upload = multer({storage: storage}).single('photo');
 
 exports.userRegister=function (req,res) {
   if(!req.body.email || !req.body.password) {
-    res.status(400).json({ success: false, message: 'Please enter email and password.' });
+    res.json({ success: false, message: 'Please enter email and password.' });
   } else {
     var newUser = new User({
       email: req.body.email,
@@ -27,7 +27,7 @@ exports.userRegister=function (req,res) {
     // save the user
     newUser.save(function(err) {
       if (err) {
-        return res.status(400).json({ success: false, message: 'That email address already exists.'});
+        return res.json({ success: false, message: 'That email address already exists.'});
       }
       res.status(201).json({ success: true, message: 'Successfully created new user.' });
     });
