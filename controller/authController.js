@@ -91,7 +91,7 @@ exports.getUserById = (req,res) => {
     if (err) {
       res.status(500).json({ success: false, message: 'Internal Server Error.' });
     }else if (data) {
-      res.status(200).json( {data});
+      res.status(200).json(data);
     }else{
         res.status(404).json({ success: false, message: 'User not found.' });
     }
@@ -103,7 +103,7 @@ exports.updateUser = (req,res) => {
   User.findById(idUser,(err,data)=>{
     let user=req.body;
     if(user._id){
-      delete req.body._id;
+      delete user._id;
 
       for(let x in user){
         data[x] = user[x];
