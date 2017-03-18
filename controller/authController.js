@@ -29,7 +29,10 @@ exports.userRegister=function (req,res) {
     console.log(newUser);
     newUser.save(function(err) {
       if (err) {
+<<<<<<< HEAD
         console.log(err);
+=======
+>>>>>>> f301cd1c2c84442d0e8e48796c3128968ee9db33
         return res.json({ success: false, message: 'That email address already exists.'});
       }
       res.json({ success: true, message: 'Successfully created new user.' });
@@ -52,7 +55,11 @@ exports.userAuth=function(req, res) {
             var token = jwt.sign(user, config.secret, {
               expiresIn: 2592000 // in seconds
             });
+<<<<<<< HEAD
             res.status(200).json({ success: true, token: 'JWT ' + token, user: user });
+=======
+            res.status(200).json({ success: true, token: 'JWT ' + token, user:user });
+>>>>>>> f301cd1c2c84442d0e8e48796c3128968ee9db33
           }
         }
   });
