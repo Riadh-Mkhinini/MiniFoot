@@ -13,8 +13,9 @@ var storage = multer.diskStorage({
 var upload = multer({storage: storage}).single('photo');
 
 exports.userRegister=function (req,res) {
+
   if(!req.body.email || !req.body.password) {
-    res.status(400).json({ success: false, message: 'Please enter email and password.' });
+    res.json({ success: false, message: 'Please enter email and password.' });
   } else {
     var newUser = new User({
       email: req.body.email,
@@ -25,11 +26,13 @@ exports.userRegister=function (req,res) {
     });
     newUser.password=newUser.generateHash(req.body.password);
     // save the user
+    console.log(newUser);
     newUser.save(function(err) {
       if (err) {
-        return res.status(400).json({ success: false, message: 'That email address already exists.'});
+        console.log(err);
+        return res.json({ success: false, message: 'That email address already exists.'});
       }
-      res.status(201).json({ success: true, message: 'Successfully created new user.' });
+      res.json({ success: true, message: 'Successfully created new user.' });
     });
   }
 };
@@ -39,22 +42,22 @@ exports.userAuth=function(req, res) {
   }, function(err, user) {
     if (err) throw err;
     if (!user) {
-      res.status(401).json({ success: false, message: 'Authentication failed. User not found.' });
+      res.json({ success: false, message: 'Authentication failed. User not found.' });
     } else {
       // Check if password matches
         if (!user.validPassword(req.body.password)) {
-            res.status(401).json({ success: false, message: 'Authentication failed. Password did not match !' });
+            res.json({ success: false, message: 'Authentication failed. Password did not match !' });
           }
           else{
             var token = jwt.sign(user, config.secret, {
               expiresIn: 2592000 // in seconds
             });
-            res.status(200).json({ success: true, token: 'JWT ' + token });
+            res.status(200).json({ success: true, token: 'JWT ' + token, user: user });
           }
         }
   });
 };
-exports.updateUser=function (req, res) {
+exports.updatePhoto=function (req, res) {
 
   upload(req, res, function(err) {
     if(err) {
@@ -67,4 +70,67 @@ exports.updateUser=function (req, res) {
     });
     res.end('Your File Uploaded');
   });
+};
+
+exports.getAllUsers = (req,res,pageNumber, nPerPage=10) => {
+  User.find().skip(pageNumber > 0 ? ((pageNumber-1)*nPerPage) : 0).limit(nPerPage)
+  .exec((err,data)=>{
+    if (err) {
+      res.status(500).json({ success: false, message: 'Internal Server Error.' });
+    }else {
+      res.status(200).json(data);
+    }
+  });
+};
+
+exports.getUserById = (req,res) => {
+  idUser=req.params.idUser;
+  User.findById(idUser,(err,data)=>{
+    if (err) {
+      res.status(500).json({ success: false, message: 'Internal Server Error.' });
+    }else if (data) {
+      res.status(200).json( {data});
+    }else{
+        res.status(404).json({ success: false, message: 'User not found.' });
+    }
+      });
+};
+
+exports.updateUser = (req,res) => {
+  idUser=req.params.idUser;
+  User.findById(idUser,(err,data)=>{
+    let user=req.body;
+    if(user._id){
+      delete req.body._id;
+
+      for(let x in user){
+        data[x] = user[x];
+      }
+      data.save((err)=>{
+        if(err)
+          res.status(400).json({ success: false, message: 'Bad Request.' });
+        else{
+          res.status(200).json(data);
+          }
+      });
+
+    }else{
+        res.status(404).json({ success: false, message: 'User not found.' });
+    }
+      });
+};
+
+exports.deleteUser = (req,res) => {
+  idUser=req.params.idUser;
+  User.findById(idUser,(err,data)=>{
+    if (err) {
+      res.status(500).json({ success: false, message: 'Internal Server Error.' });
+    }else if (data) {
+      data.remove();
+      res.status(204).json({ success: true, message: 'No Content' });
+    }else{
+        res.status(404).json({ success: false, message: 'User not found.' });
+    }
+      });
+
 };

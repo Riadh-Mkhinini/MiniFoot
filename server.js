@@ -19,6 +19,7 @@ mongoose.connect(config.urlDb);
 app.use(passport.initialize());
 // defined Passport Strategy
 require('./config/passport')(passport);
+
 var authRouter=require('./routes/authRouter')();
 app.use('/api',authRouter);
 
