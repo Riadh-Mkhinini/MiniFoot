@@ -55,7 +55,6 @@ exports.userAuth=function(req, res) {
   });
 };
 exports.updateUser=function (req, res) {
-
   upload(req, res, function(err) {
     if(err) {
       return err;
