@@ -23,7 +23,7 @@ exports.userRegister=function (req,res) {
       password: req.body.password,
       firstname:req.body.firstname,
       lastname:req.body.lastname,
-      address:req.body.address
+      addresse:req.body.addresse
     });
     newUser.password=newUser.generateHash(req.body.password);
     // save the user
@@ -63,12 +63,9 @@ exports.userAuth=function(req, res) {
         }
   });
 };
-<<<<<<< HEAD
-exports.updateUser=function (req, res) {
-=======
+
 exports.updatePhoto=function (req, res) {
 
->>>>>>> f8e60990d45acd9fc264a89f81fa304984a460b6
   upload(req, res, function(err) {
     if(err) {
       return err;

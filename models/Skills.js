@@ -1,12 +1,13 @@
 var mongoose=require('mongoose');
 var Schema=mongoose.Schema;
+var ObjectId = Schema.ObjectId;
 var User=require('./users').modelUser;
 
 var skillsSchema=new Schema({
-  attaque: [Number],
-  defence: [Number],
-  milieu: [Number],
-  gardien: [Number],
+  attaque: [{ObjectId, Number}],
+  defence: [{ObjectId, Number}],
+  milieu: [{ObjectId, Number}],
+  gardien: [{ObjectId, Number}],
   noteTo:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
