@@ -1,8 +1,8 @@
 var mongoose=require('mongoose');
 var Schema=mongoose.Schema;
-var User=require('./user').modelUser;
+var User=require('./users').modelUser;
 
-var competenceSchema=new Schema({
+var skillsSchema=new Schema({
   attaque: [Number],
   defence: [Number],
   milieu: [Number],
@@ -13,5 +13,5 @@ var competenceSchema=new Schema({
     }
 });
 
-var modelCompetences=mongoose.model("Competences",competenceSchema);
-module.exports = modelCompetences;
+var modelSkills=mongoose.model("Skills",skillsSchema);
+module.exports = modelSkills;
