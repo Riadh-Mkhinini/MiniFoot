@@ -21,11 +21,15 @@ app.use(passport.initialize());
 require('./config/passport')(passport);
 
 var authRouter=require('./routes/authRouter')();
+var skillsRouter=require('./routes/skillsRouter')();
+
 app.use('/api',authRouter);
+app.use('/api/skills',skillsRouter);
 
 app.get('/api',passport.authenticate('jwt',{session:false}),function(req,res){
   res.send("hello");
 });
+
 app.get('/',function(req,res){
   res.send("welcome to my api");
 });

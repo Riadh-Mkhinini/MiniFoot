@@ -2,6 +2,8 @@ var User = require('../models/users');
 var jwt = require('jsonwebtoken');
 var config = require('../config/config');
 var multer  = require('multer');
+var Skills = require('../models/Skills');
+
 var storage = multer.diskStorage({
   destination: function (request, file, callback) {
     callback(null, './uploads');
@@ -25,14 +27,16 @@ exports.userRegister=function (req,res) {
     });
     newUser.password=newUser.generateHash(req.body.password);
     // save the user
-    console.log(newUser);
     newUser.save(function(err) {
       if (err) {
-        console.log(err);
-
         return res.json({ success: false, message: 'That email address already exists.'});
+      }else{
+        var skill= new Skills({
+          noteTo: newUser._id
+        });
+        skill.save((err)=>{err : console.log(err);});
+        return res.json({ success: true, message: 'Successfully created new user.' });
       }
-      res.json({ success: true, message: 'Successfully created new user.' });
     });
   }
 };

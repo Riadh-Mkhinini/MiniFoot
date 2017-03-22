@@ -1,7 +1,7 @@
 /*jshint esversion: 6 */
 var express=require('express');
 var authController=require('../controller/authController');
-var routes=(User,jwt,config)=>{
+var routes=()=>{
   var authRouter=express.Router();
   // Register new users
   authRouter.post('/register', authController.userRegister);
