@@ -81,7 +81,7 @@ exports.updatePhoto=function (req, res) {
 
 exports.getAllUsers = (req,res) => {
   let pageNumber=req.query.page;
-  let nPerPage=2;
+  let nPerPage=10;
   User.find().skip(pageNumber > 0 ? ((pageNumber-1)*nPerPage) : 0).limit(nPerPage)
   .exec((err,data)=>{
     if (err) {

@@ -1,6 +1,6 @@
 var Skills = require('../models/Skills');
 exports.addSkills=function (req,res) {
-  var skill=req.body;
+/*  var skill=req.body;
   Skills.update({noteTo:req.params.idUser},
     {$push:{
       attaque:{skill.id,skill.attaque},
@@ -13,5 +13,5 @@ exports.addSkills=function (req,res) {
       console.log(err);
     }
     return res.send({ success: true, message: 'Successfully added skills.' });
-  });
+  });*/
 };
