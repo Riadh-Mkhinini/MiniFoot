@@ -23,7 +23,7 @@ exports.userRegister=function (req,res) {
       password: req.body.password,
       firstname:req.body.firstname,
       lastname:req.body.lastname,
-      addresse:req.body.addresse
+      adresse:req.body.adresse
     });
     newUser.password=newUser.generateHash(req.body.password);
     // save the user
