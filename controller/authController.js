@@ -25,14 +25,18 @@ exports.userRegister=function (req,res) {
     });
     newUser.password=newUser.generateHash(req.body.password);
     // save the user
+    console.log(newUser);
     newUser.save(function(err) {
       if (err) {
+        console.log(err);
+
         return res.json({ success: false, message: 'That email address already exists.'});
       }
-      res.status(201).json({ success: true, message: 'Successfully created new user.' });
+      res.json({ success: true, message: 'Successfully created new user.' });
     });
   }
 };
+
 exports.userAuth=function(req, res) {
   User.findOne({
     email: req.body.email
@@ -49,12 +53,18 @@ exports.userAuth=function(req, res) {
             var token = jwt.sign(user, config.secret, {
               expiresIn: 2592000 // in seconds
             });
-            res.status(200).json({ success: true, token: 'JWT ' + token, user:user });
+
+            res.status(200).json({ success: true, token: 'JWT ' + token, user: user });
           }
         }
   });
 };
+<<<<<<< HEAD
 exports.updateUser=function (req, res) {
+=======
+exports.updatePhoto=function (req, res) {
+
+>>>>>>> f8e60990d45acd9fc264a89f81fa304984a460b6
   upload(req, res, function(err) {
     if(err) {
       return err;
@@ -66,4 +76,69 @@ exports.updateUser=function (req, res) {
     });
     res.end('Your File Uploaded');
   });
+};
+
+exports.getAllUsers = (req,res) => {
+  let pageNumber=req.query.page;
+  let nPerPage=2;
+  User.find().skip(pageNumber > 0 ? ((pageNumber-1)*nPerPage) : 0).limit(nPerPage)
+  .exec((err,data)=>{
+    if (err) {
+      res.status(500).json({ success: false, message: 'Internal Server Error.' });
+    }else {
+      res.status(200).json(data);
+    }
+  });
+};
+
+exports.getUserById = (req,res) => {
+  idUser=req.params.idUser;
+  User.findById(idUser,(err,data)=>{
+    if (err) {
+      res.status(500).json({ success: false, message: 'Internal Server Error.' });
+    }else if (data) {
+      res.status(200).json(data);
+    }else{
+        res.status(404).json({ success: false, message: 'User not found.' });
+    }
+      });
+};
+
+exports.updateUser = (req,res) => {
+  idUser=req.params.idUser;
+  User.findById(idUser,(err,data)=>{
+    let user=req.body;
+    if(user._id){
+      delete user._id;
+
+      for(let x in user){
+        data[x] = user[x];
+      }
+      data.save((err)=>{
+        if(err)
+          res.status(400).json({ success: false, message: 'Bad Request.' });
+        else{
+          res.status(200).json(data);
+          }
+      });
+
+    }else{
+        res.status(404).json({ success: false, message: 'User not found.' });
+    }
+      });
+};
+
+exports.deleteUser = (req,res) => {
+  idUser=req.params.idUser;
+  User.findById(idUser,(err,data)=>{
+    if (err) {
+      res.status(500).json({ success: false, message: 'Internal Server Error.' });
+    }else if (data) {
+      data.remove();
+      res.status(204).json({ success: true, message: 'No Content' });
+    }else{
+        res.status(404).json({ success: false, message: 'User not found.' });
+    }
+      });
+
 };

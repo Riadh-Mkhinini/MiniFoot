@@ -7,7 +7,11 @@ var routes=(User,jwt,config)=>{
   authRouter.post('/register', authController.userRegister);
   // Authenticate the user and get a JSON Web Token to include in the header of future requests.
   authRouter.post('/authenticate',authController.userAuth);
-  authRouter.post('/upload/:id',authController.updateUser);
+  authRouter.post('/upload/:id',authController.updatePhoto);
+  authRouter.get('/',authController.getAllUsers);
+  authRouter.get('/:idUser',authController.getUserById);
+  authRouter.put('/:idUser',authController.updateUser);
+  authRouter.delete('/:idUser',authController.deleteUser);
 return authRouter;
 };
 module.exports=routes;
