@@ -37,21 +37,24 @@ exports.addSkills=function (req,res) {
 };
 exports.getSkills=function (req,res) {
   idUser=req.params.idUser;
-  //{$sum:'attaque.$.value',$sum:'defence.$.value',$sum:'milieu.$.value',$sum:'gardien.$.value'}
   Skills.findOne({noteTo:idUser},(err,data)=>{
     if (err) {
       res.send({ success: false, message: 'Internal Server Error.' });
     }else{
+      let countAc=0;
       let ac=0;
       let df=0;
       let mc=0;
       let gb=0;
-      data.attaque.forEach((item)=> ac +=item.value);
+      data.attaque.forEach((item)=> {
+        countAc++;
+        return ac +=item.value
+      });
       data.defence.forEach((item)=> df +=item.value);
       data.milieu.forEach((item)=> mc +=item.value);
       data.gardien.forEach((item)=> gb +=item.value);
       let total=(ac+df+mc+gb)/4;
-      res.send({'attaque':ac,'defence':df,'milieu':mc,'gardien':gb,'total':total});
+      res.send({'attaque':ac,'defence':df,'milieu':mc,'gardien':gb,'total':total ,'nbrPersonne':countAc});
     }
   });
 };
