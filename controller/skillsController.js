@@ -31,7 +31,6 @@ exports.addSkills=function (req,res) {
         }
         res.send({success:true,message:'Successfully updated skills.'});
       });
-
     }
   });
 };

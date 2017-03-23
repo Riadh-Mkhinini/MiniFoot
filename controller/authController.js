@@ -53,3 +53,86 @@ exports.userAuth=function(req, res) {
         }
   });
 };
+<<<<<<< HEAD
+=======
+
+exports.updatePhoto=function (req, res) {
+
+  upload(req, res, function(err) {
+    if(err) {
+      return err;
+    }
+    User.findOneAndUpdate({_id:req.params.id},{$set:{photo:req.file.filename}},function (err,res) {
+      if (err) {
+        return res.status(404).json({ success: false, message: 'User not found.' });
+      }
+    });
+    res.end('Your File Uploaded');
+  });
+};
+
+exports.getAllUsers = (req,res) => {
+  let pageNumber=req.query.page;
+  let nPerPage=10;
+  User.find().skip(pageNumber > 0 ? ((pageNumber-1)*nPerPage) : 0).limit(nPerPage)
+  .exec((err,data)=>{
+    if (err) {
+      res.status(500).json({ success: false, message: 'Internal Server Error.' });
+    }else {
+      res.status(200).json(data);
+    }
+  });
+};
+
+exports.getUserById = (req,res) => {
+  idUser=req.params.idUser;
+  User.findById(idUser,(err,data)=>{
+    if (err) {
+      res.status(500).json({ success: false, message: 'Internal Server Error.' });
+    }else if (data) {
+      res.status(200).json(data);
+    }else{
+        res.status(404).json({ success: false, message: 'User not found.' });
+    }
+      });
+};
+
+exports.updateUser = (req,res) => {
+  idUser=req.params.idUser;
+  User.findById(idUser,(err,data)=>{
+    let user=req.body;
+    if(user._id){
+      delete user._id;
+
+      for(let x in user){
+        data[x] = user[x];
+      }
+      data.save((err)=>{
+        if(err)
+          res.status(400).json({ success: false, message: 'Bad Request.' });
+        else{
+          res.status(200).json(data);
+          }
+      });
+
+    }else{
+        res.status(404).json({ success: false, message: 'User not found.' });
+    }
+      });
+};
+
+exports.deleteUser = (req,res) => {
+  idUser=req.params.idUser;
+  User.findById(idUser,(err,data)=>{
+    if (err) {
+      res.status(500).json({ success: false, message: 'Internal Server Error.' });
+    }else if (data) {
+      data.remove();
+      res.status(204).json({ success: true, message: 'No Content' });
+    }else{
+        res.status(404).json({ success: false, message: 'User not found.' });
+    }
+      });
+
+};
+>>>>>>> 5977dee66e8a6a07caebad8f8be734170e90400b
