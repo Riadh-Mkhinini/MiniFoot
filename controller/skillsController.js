@@ -2,15 +2,6 @@ var Skills = require('../models/Skills');
 var mongoose=require('mongoose');
 
 exports.addSkills=function (req,res) {
-<<<<<<< HEAD
-/*  var skill=req.body;
-  Skills.update({noteTo:req.params.idUser},
-    {$push:{
-      attaque:{skill.id,skill.attaque},
-      defence:{skill.id,skill.defence},
-      milieu:{skill.id,skill.milieu},
-      gardien:{skill.id,skill.gardien},
-=======
   var skill=req.body;
   var idUser=req.params.idUser;
   Skills.find({noteTo:idUser,'attaque.user': {$eq: req.query.id}}).exec(function(err,data){
@@ -40,14 +31,11 @@ exports.addSkills=function (req,res) {
         }
         res.send({success:true,message:'Successfully updated skills.'});
       });
-
->>>>>>> d096113e9fc7eafa8715d51193576e12e2dc5fa4
     }
   });
 };
 exports.getSkills=function (req,res) {
   idUser=req.params.idUser;
-  //{$sum:'attaque.$.value',$sum:'defence.$.value',$sum:'milieu.$.value',$sum:'gardien.$.value'}
   Skills.findOne({noteTo:idUser},(err,data)=>{
     if (err) {
       res.send({ success: false, message: 'Internal Server Error.' });
@@ -63,10 +51,5 @@ exports.getSkills=function (req,res) {
       let total=(ac+df+mc+gb)/4;
       res.send({'attaque':ac,'defence':df,'milieu':mc,'gardien':gb,'total':total});
     }
-<<<<<<< HEAD
-    return res.send({ success: true, message: 'Successfully added skills.' });
-  });*/
-=======
   });
->>>>>>> d096113e9fc7eafa8715d51193576e12e2dc5fa4
 };
