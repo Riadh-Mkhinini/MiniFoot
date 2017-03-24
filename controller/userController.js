@@ -55,6 +55,7 @@ exports.updatePhoto=function (req, res) {
 };
 
 exports.getPhoto=function (req, res) {
+  //res.setHeader('Content-Type', storedMimeType)
   fs.createReadStream(path.join('./uploads', req.params.id)).pipe(res);
 };
 

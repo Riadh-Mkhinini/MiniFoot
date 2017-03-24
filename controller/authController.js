@@ -14,7 +14,16 @@ exports.userRegister=function (req,res) {
       firstname:req.body.firstname,
       lastname:req.body.lastname,
       adresse:req.body.adresse,
-      photo:'userdefault.png'
+      photo:'userdefault.png',
+      city:'Tunisia',
+      phone:55555555,
+      joueur:{
+          poste:'Ajouter votre position sur le terrain',
+          taille:0,
+          poid:0,
+          age :0,
+          type:'Joueur'
+      }
     });
     newUser.password=newUser.generateHash(req.body.password);
     // save the user
