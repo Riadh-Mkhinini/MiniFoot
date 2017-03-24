@@ -1,5 +1,7 @@
 var User = require('../models/users');
 var multer  = require('multer');
+var path = require('path');
+var fs = require('fs');
 
 var storage = multer.diskStorage({
   destination: function (request, file, callback) {
@@ -9,15 +11,16 @@ var storage = multer.diskStorage({
     callback(null, file.originalname);
   }
 });
+
 var upload = multer({storage: storage}).single('photo');
 
 exports.getAllUsers = (req,res) => {
-  let pageNumber=req.query.page;
-  let nPerPage=2;
-  User.find().skip(pageNumber > 0 ? ((pageNumber-1)*nPerPage) : 0).limit(nPerPage)
-  .exec((err,data)=>{
+  //let pageNumber=req.query.page;
+  //.skip(pageNumber > 0 ? ((pageNumber-1)*nPerPage) : 0).limit(nPerPage)
+  //let nPerPage=10;
+  User.find({$text: {$search: `/${req.query.name}/`}}).exec((err,data)=>{
     if (err) {
-      res.status(500).json({ success: false, message: 'Internal Server Error.' });
+      res.json({ success: false, message: 'Internal Server Error.' });
     }else {
       res.status(200).json(data);
     }
@@ -49,6 +52,10 @@ exports.updatePhoto=function (req, res) {
     });
     res.end('Your File Uploaded');
   });
+};
+
+exports.getPhoto=function (req, res) {
+  fs.createReadStream(path.join('./uploads', req.params.id)).pipe(res);
 };
 
 exports.updateUser = (req,res) => {

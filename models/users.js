@@ -19,7 +19,7 @@ var userSchema=new mongoose.Schema({
       type:{type:String,enume:['Joueur','Responsable','Adjoint'],default:'Joueur'}
   }
 });
-
+userSchema.index({firstname: 'text', lastname: 'text'});
 //generating a hash
 userSchema.methods.generateHash=function(password){
   return bcrypt.hashSync(password,bcrypt.genSaltSync(8),null);
