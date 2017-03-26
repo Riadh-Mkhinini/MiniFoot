@@ -10,7 +10,7 @@ var routes=()=>{
   authRouter.post('/register', authController.userRegister);
   // Authenticate the user and get a JSON Web Token to include in the header of future requests.
   authRouter.post('/authenticate',authController.userAuth);
-  //Upload image user 
+  //Upload image user
   authRouter.post('/users/upload/:id',userController.updatePhoto);
   authRouter.get('/users/upload/:id',userController.getPhoto);
 

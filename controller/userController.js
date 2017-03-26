@@ -42,6 +42,7 @@ exports.getUserById = (req,res) => {
 
 exports.updatePhoto=function (req, res) {
   upload(req, res, function(err) {
+      console.log('service photo',req.file);
     if(err) {
       return err;
     }
