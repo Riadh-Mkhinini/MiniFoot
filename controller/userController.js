@@ -46,6 +46,7 @@ exports.updatePhoto=function (req, res) {
     if(err) {
       return err;
     }
+    console.log(req.file);
     User.findOneAndUpdate({_id:req.params.id},{$set:{photo:req.file.filename}},function (err,res) {
       if (err) {
         return res.status(404).json({ success: false, message: 'User not found.' });
@@ -56,7 +57,6 @@ exports.updatePhoto=function (req, res) {
 };
 
 exports.getPhoto=function (req, res) {
-  //res.setHeader('Content-Type', storedMimeType)
   fs.createReadStream(path.join('./uploads', req.params.id)).pipe(res);
 };
 
