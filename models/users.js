@@ -11,6 +11,7 @@ var userSchema=new mongoose.Schema({
   email:{type:String,unique:true,required:true},
   password:{type:String,required:true},
   role:{type:String,enume:['Joueur','Manager'],default:'Joueur'},
+  token:String,
   joueur:{
       poste:String,
       taille:Number,

@@ -40,20 +40,20 @@ exports.getSkills=function (req,res) {
     if (err) {
       res.send({ success: false, message: 'Internal Server Error.' });
     }else{
-      let countAc=0;
+      let count=0;
       let ac=0;
       let df=0;
       let mc=0;
       let gb=0;
       data.attaque.forEach((item)=> {
-        countAc++;
+        count++;
         return ac +=item.value
       });
       data.defence.forEach((item)=> df +=item.value);
       data.milieu.forEach((item)=> mc +=item.value);
       data.gardien.forEach((item)=> gb +=item.value);
-      let total=(ac+df+mc+gb)/4;
-      res.send({'attaque':ac,'defence':df,'milieu':mc,'gardien':gb,'total':total ,'nbrPersonne':countAc});
+      let total=(((ac + df + mc + gb) / 4) / count);
+      res.send({'attaque':ac/count,'defence':df/count,'milieu':mc/count,'gardien':gb/count,'total':total ,'nbrPersonne':count});
     }
   });
 };
