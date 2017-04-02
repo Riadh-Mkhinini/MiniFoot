@@ -17,7 +17,7 @@ var routes=()=>{
   authRouter.get('/users/',userController.getAllUsers);
   authRouter.get('/users/:idUser',userController.getUserById);
   authRouter.put('/users/:idUser',userController.updateUser);
-  authRouter.delete('/users/:idUser',userController.deleteUser);
+  authRouter.patch('/users/:idUser',userController.updatePassword);
   //skills of user
   authRouter.post('/users/:idUser/skills', skillsController.addSkills);
   authRouter.get('/users/:idUser/skills', skillsController.getSkills);

@@ -64,36 +64,43 @@ exports.updateUser = (req,res) => {
   idUser=req.params.idUser;
   User.findById(idUser,(err,data)=>{
     let user=req.body;
-    if(user._id){
-      delete user._id;
+      console.log(user);
+    if(user.id){
+      delete user.id;
 
       for(let x in user){
         data[x] = user[x];
       }
       data.save((err)=>{
-        if(err)
-          res.status(400).json({ success: false, message: 'Bad Request.' });
-        else{
-          res.status(200).json(data);
+        if(err){
+          res.json({ success: false, message: 'Bad Request.' });
+        }else{
+          res.status(202).json(data);
           }
       });
 
     }else{
-        res.status(404).json({ success: false, message: 'User not found.' });
-    }
-      });
-};
-
-exports.deleteUser = (req,res) => {
-  idUser=req.params.idUser;
-  User.findById(idUser,(err,data)=>{
-    if (err) {
-      res.status(500).json({ success: false, message: 'Internal Server Error.' });
-    }else if (data) {
-      data.remove();
-      res.status(204).json({ success: true, message: 'No Content' });
-    }else{
-        res.status(404).json({ success: false, message: 'User not found.' });
+        res.send({ success: false, message: 'User not found.' });
     }
   });
+};
+
+exports.updatePassword = (req,res) => {
+  idUser=req.params.idUser;
+  User.findOneAndUpdate({_id:idUser},{$set:{password:req.body.password}},function (err,data) {
+    if (err) {
+      res.json({ success: false, message: 'Bad Request.' });
+    } else{
+          data.password = data.generateHash(req.body.password);
+          data.save((err)=>{
+            if(err){
+              res.json({ success: false, message: 'Bad Request.' });
+                console.log("errrrrrrrrrrr");
+            }else{
+              return res.json({ success: true, message: 'update password.' });
+              console.log("succsssssssssssss");
+              }
+          });
+        }
+});
 };
