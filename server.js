@@ -15,14 +15,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 // connect to db
 mongoose.connect(config.urlDb);
+mongoose.Promise = global.Promise;
 // Initialize passport for use
 app.use(passport.initialize());
 // defined Passport Strategy
 require('./config/passport')(passport);
 
 var authRouter=require('./routes/authRouter')();
+var friendsRouter=require('./routes/friendsRouter')();
 
 app.use('/api',authRouter);
+app.use('/api/friends',friendsRouter);
 
 app.get('/api',passport.authenticate('jwt',{session:false}),function(req,res){
   res.send("hello");

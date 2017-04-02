@@ -2,7 +2,7 @@ var User = require('../models/users');
 var jwt = require('jsonwebtoken');
 var config = require('../config/config');
 var Skills = require('../models/Skills');
-
+var Friends = require('../models/Friends');
 
 exports.userRegister=function (req,res) {
   if(!req.body.email || !req.body.password) {
@@ -31,10 +31,10 @@ exports.userRegister=function (req,res) {
       if (err) {
         return res.json({ success: false, message: 'That email address already exists.'});
       }else{
-        var skill= new Skills({
-          noteTo: newUser._id
-        });
+        var skill= new Skills({ noteTo: newUser._id });
+        var friend= new Friends({ user: newUser._id });
         skill.save((err)=>{err : console.log(err);});
+        friend.save((err)=>{err : console.log(err);});
         return res.json({ success: true, message: 'Successfully created new user.' });
       }
     });
@@ -47,19 +47,20 @@ exports.userAuth=function(req, res) {
   }, function(err, user) {
     if (err) throw err;
     if (!user) {
-      res.json({ success: false, message: 'Authentication failed. User not found.' });
+      res.json({ success: false, message: 'User not found !' });
     } else {
       // Check if password matches
         if (!user.validPassword(req.body.password)) {
-            res.json({ success: false, message: 'Authentication failed. Password did not match !' });
+            res.json({ success: false, message: 'Password did not match !' });
           }
-          else{
-            var token = jwt.sign(user, config.secret, {
-              expiresIn: 2592000 // in seconds
-            });
-
-            res.status(200).json({ success: true, token: 'JWT ' + token, user: user });
-          }
+        else{
+          user.token = req.body.token;
+          user.save((err)=>{err : console.log(err);});
+          var token = jwt.sign(user, config.secret, {
+            expiresIn: 2592000 // in seconds
+          });
+          res.status(200).json({ success: true, token: 'JWT ' + token, user: user });
         }
+    }
   });
 };
