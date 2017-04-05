@@ -23,7 +23,7 @@ exports.addSkills=function (req,res) {
       Skills.update({noteTo:idUser, 'attaque.user': { "$eq": req.query.id }}, {$set:
         { 'attaque.$.value':skill.attaque,
           'defence.$.value':skill.defence,
-          'milieu.$.value':skill.attaque,
+          'milieu.$.value':skill.milieu,
           'gardien.$.value':skill.gardien }
         },function(err,skills){
         if (err) {

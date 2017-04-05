@@ -14,7 +14,14 @@ app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 // connect to db
-mongoose.connect(config.urlDb);
+mongoose.connect(config.urlDb, {
+  server: {
+    socketOptions: {
+      socketTimeoutMS: 0,
+      connectionTimeout: 0
+    }
+  }
+});
 mongoose.Promise = global.Promise;
 // Initialize passport for use
 app.use(passport.initialize());
