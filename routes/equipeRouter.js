@@ -11,10 +11,10 @@ var routes=()=>{
   //update players of team
   equipeRouter.put('/:idEquipe/players',equipeController.updateJoueurs);
   //Rename type Player
-  equipeRouter.put('/:idUser/rename',equipeController.RenameAdjointPlayer); 
+  equipeRouter.put('/:idUser/rename',equipeController.RenameAdjointPlayer);
   //logo upload
-  equipeRouter.post('/upload/:id',equipeController.updatePhoto);
-  equipeRouter.get('/upload/:id',equipeController.getPhoto);
+  equipeRouter.post('/teamUploads/:id',equipeController.updatePhoto);
+  equipeRouter.get('/teamUploads/:id',equipeController.getPhoto);
 
 
   return equipeRouter;

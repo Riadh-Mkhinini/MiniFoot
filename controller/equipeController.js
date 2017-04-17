@@ -7,7 +7,7 @@ var fs = require('fs');
 
 var storage = multer.diskStorage({
   destination: function (request, file, callback) {
-    callback(null, './TeamUploads');
+    callback(null, './teamUploads');
   },
   filename: function (request, file, callback) {
     callback(null, file.originalname);
@@ -17,7 +17,7 @@ var storage = multer.diskStorage({
 var upload = multer({storage: storage}).single('photo');
 
 exports.getPhoto=function (req, res) {
-  fs.createReadStream(path.join('./TeamUploads', req.params.id)).pipe(res);
+  fs.createReadStream(path.join('./teamUploads', req.params.id)).pipe(res);
 };
 
 exports.updatePhoto=function (req, res) {
