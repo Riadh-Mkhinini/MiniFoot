@@ -25,12 +25,14 @@ exports.updatePhoto=function (req, res) {
     if(err) {
       return err;
     }
-    Equipe.findOneAndUpdate({_id:req.params.id},{$set:{logo:req.file.filename}},function (err,res) {
+    Equipe.findOneAndUpdate({_id:req.params.id},{$set:{logo:req.file.filename}},function (err,response) {
       if (err) {
-        return res.status(404).json({ success: false, message: 'User not found.' });
+        return res.json({ success: false, message: 'Equipe not found.' });
+      }else {
+          response.logo = req.file.filename;
+          return res.json({ success: true, message: response});
       }
     });
-    res.end('Your File Uploaded');
   });
 };
 
@@ -55,7 +57,7 @@ exports.createEquipe = (req,res) => {
                      if (error) {
                          return res.json({ success: false, message: 'Internal Server Error.' });
                      }else {
-                         return res.json(equipe);
+                         return res.json({ success: true, message: equipe });
                      }
                  });
              }
