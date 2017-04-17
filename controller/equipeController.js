@@ -27,10 +27,12 @@ exports.updatePhoto=function (req, res) {
     }
     Equipe.findOneAndUpdate({_id:req.params.id},{$set:{logo:req.file.filename}},function (err,res) {
       if (err) {
-        return res.status(404).json({ success: false, message: 'User not found.' });
-      }
+        return res.json({ success: false, message: 'User not found.' });
+    }else {
+        return res.json(res);
+    }
     });
-    res.end('Your File Uploaded');
+
   });
 };
 

@@ -16,7 +16,6 @@ var routes=()=>{
   equipeRouter.post('/teamUploads/:id',equipeController.updatePhoto);
   equipeRouter.get('/teamUploads/:id',equipeController.getPhoto);
 
-
   return equipeRouter;
 };
 module.exports=routes;
