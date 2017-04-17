@@ -38,9 +38,12 @@ require('./config/passport')(passport);
 var authRouter=require('./routes/authRouter')();
 var friendsRouter=require('./routes/friendsRouter')();
 var roomRouter=require('./routes/roomRouter')();
+var equipeRouter=require('./routes/equipeRouter')();
 
-app.use('/api', authRouter);
-app.use('/api/friends', friendsRouter);
+
+app.use('/api',authRouter);
+app.use('/api/friends',friendsRouter);
+app.use('/api',equipeRouter);
 app.use('/api/rooms', roomRouter);
 
 app.get('/api',passport.authenticate('jwt',{session:false}),function(req,res){
