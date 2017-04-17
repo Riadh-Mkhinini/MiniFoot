@@ -3,6 +3,7 @@ var Friends = require('../models/Friends');
 var mongoose=require('mongoose');
 var User = require('../models/users');
 var gcm = require('node-gcm');
+var Room = require('../models/Room');
 
 exports.addFriendsNotification = function(req, res) {
   var notification = new NotificationFriends({
@@ -60,6 +61,16 @@ exports.acceptFriendsNotification = function(req, res) {
               res.json({ success: false, message: 'Internal Server Error.' });
             }else{
                 res.json({ success: true, message: 'Invitation accepted' });
+                var tabUsers = [];
+                tabUsers.push(req.body.friend);
+                tabUsers.push(req.body.idUser);
+                var newRoom = new Room({
+                  users: tabUsers,
+                  message : 'Envoyer votre première message',
+                  user: { _id: req.body.friend, name: '', avatar: ''},
+                  vue: 0
+                });
+                newRoom.save((err)=>{err : console.log(err);});
             }
           });
         }

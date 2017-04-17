@@ -9,6 +9,13 @@ var jwt = require('jsonwebtoken');
 var config = require('./config/config');
 var app=express();
 const PORT=process.env.PORT || 3000;
+
+
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
+
+require('./controller/chatController')(io);
+
 // Log requests to console
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -30,9 +37,11 @@ require('./config/passport')(passport);
 
 var authRouter=require('./routes/authRouter')();
 var friendsRouter=require('./routes/friendsRouter')();
+var roomRouter=require('./routes/roomRouter')();
 
-app.use('/api',authRouter);
-app.use('/api/friends',friendsRouter);
+app.use('/api', authRouter);
+app.use('/api/friends', friendsRouter);
+app.use('/api/rooms', roomRouter);
 
 app.get('/api',passport.authenticate('jwt',{session:false}),function(req,res){
   res.send("hello");
@@ -41,5 +50,6 @@ app.get('/api',passport.authenticate('jwt',{session:false}),function(req,res){
 app.get('/',function(req,res){
   res.send("welcome to my api");
 });
-app.listen(PORT);
+server.listen(PORT);
+//app.listen(PORT);
 console.log("Listen on port "+ PORT);
