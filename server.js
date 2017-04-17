@@ -43,7 +43,7 @@ var equipeRouter=require('./routes/equipeRouter')();
 
 app.use('/api',authRouter);
 app.use('/api/friends',friendsRouter);
-app.use('/api',equipeRouter);
+app.use('/api/equipe',equipeRouter);
 app.use('/api/rooms', roomRouter);
 
 app.get('/api',passport.authenticate('jwt',{session:false}),function(req,res){

@@ -1,19 +1,68 @@
 var Equipe = require('../models/Equipe');
+var User = require('../models/users');
 var mongoose=require('mongoose');
+var multer  = require('multer');
+var path = require('path');
+var fs = require('fs');
+
+var storage = multer.diskStorage({
+  destination: function (request, file, callback) {
+    callback(null, './TeamUploads');
+  },
+  filename: function (request, file, callback) {
+    callback(null, file.originalname);
+  }
+});
+
+var upload = multer({storage: storage}).single('photo');
+
+exports.getPhoto=function (req, res) {
+  fs.createReadStream(path.join('./TeamUploads', req.params.id)).pipe(res);
+};
+
+exports.updatePhoto=function (req, res) {
+  upload(req, res, function(err) {
+    if(err) {
+      return err;
+    }
+    Equipe.findOneAndUpdate({_id:req.params.id},{$set:{logo:req.file.filename}},function (err,res) {
+      if (err) {
+        return res.status(404).json({ success: false, message: 'User not found.' });
+      }
+    });
+    res.end('Your File Uploaded');
+  });
+};
+
 
 exports.createEquipe = (req,res) => {
   let equipe=new Equipe(req.body);
   if (!req.body.name) {
       res.json({ success: false, message: 'Svp choisir un nom pour votre équipe.' });
   }else {
+    var player = { idJoueur: req.body.createdBy, x: 0, y:0 };
+    equipe.joueurs.push(player);
     equipe.save((err) => {
       if(err){
         res.json({ success: false, message: 'Bad Request.' });
       }else{
-        return res.status(200).json(equipe);
-    }
-  });
-}
+          User.findOne({ _id: req.body.createdBy}, function(err, data){
+             if (err) {
+                 return res.json({ success: false, message: 'Internal Server Error.' });
+             } else {
+                 data.joueur.type = 'Responsable';
+                 data.save(function(error) {
+                     if (error) {
+                         return res.json({ success: false, message: 'Internal Server Error.' });
+                     }else {
+                         return res.json(equipe);
+                     }
+                 });
+             }
+          });
+      }
+    });
+  }
 };
 
 exports.getAllEquipe = (req,res) => {
@@ -29,7 +78,15 @@ exports.getAllEquipe = (req,res) => {
 
 exports.getEquipeById = (req,res) => {
   idEquipe=req.params.idEquipe;
-  Equipe.findById(idEquipe).populate({path:'createdBy'}).populate({path:'joueurs'})
+  Equipe.findById(idEquipe).populate
+    ({
+        path:'createdBy',
+        select: ['_id', 'firstname', 'lastname', 'photo']
+    }).populate
+    ({
+        path:'joueurs.idJoueur',
+        select: ['_id', 'firstname', 'lastname', 'photo']
+    })
       .exec(function(err, data) {
         if (err) {
           res.status(500).send(err);
@@ -39,45 +96,37 @@ exports.getEquipeById = (req,res) => {
       });
 };
 
-exports.addJoueur = (req,res) => {
-  var idEquipe=req.params.idEquipe;
-
-
-
-/*   Equipe.findOneAndUpdate({idEquipe},{ $push: { joueurs: req.body.joueurs } }).populate({path:'joueurs'})
-      .exec(function(err, data) {
-          if (err) {
-            res.json(err);
-          }else {
-              console.log(data.value);
-           res.json(data.value);
-          }
-        });*/
-       Equipe.findOne(({idEquipe}).populate({path:'joueurs'}),(err,data)=>{
-          console.log();
-         if (err) {
-           res.send({ success: false, message: 'Internal Server Error.' });
-         }else{
-
-           data.joueurs.push( req.body.joueurs );
-              console.log(data.joueurs);
-             data.save((err)=>{
-               if(err){
-                 res.json({ success: false, message: 'Bad Request.' });
-                   console.log("errrrrrrrrrrr");
-               }else{
-                 return res.json(data);
-                 console.log("succsssssssssssss");
-                 }
-             });
-         }
-   });
-
+exports.updateJoueurs = (req,res) => {
+    var idEquipe=req.params.idEquipe;
+    Equipe.findOne({ _id: idEquipe }, (err, data) => {
+     if (err) {
+       res.send({ success: false, message: 'Internal Server Error.' });
+     } else {
+         data.joueurs = req.body.joueurs;
+         data.save((err) => {
+           if (err) {
+             res.json({ success: false, message: 'Bad Request.' });
+           } else {
+             return res.json(data);
+           }
+         });
+     }
+    });
 };
 
-exports.updateEquipe = (req,res) => {
-
-};
-exports.deleteEquipe = (req,res) => {
-
+exports.RenameAdjointPlayer = (req,res) => {
+    User.findOne({ _id: req.params.idUser }, function(err, data){
+       if (err) {
+           return res.json({ success: false, message: 'Internal Server Error.' });
+       } else {
+           data.joueur.type = 'Adjoint';
+           data.save(function(error) {
+               if (error) {
+                   return res.json({ success: false, message: 'Internal Server Error.' });
+               }else {
+                   return res.json(data);
+               }
+           });
+       }
+    });
 };

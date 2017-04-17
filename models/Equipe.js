@@ -13,10 +13,11 @@ var equipeSchema=new Schema({
           type:  mongoose.Schema.Types.ObjectId,
           ref: 'User'
         },
-  joueurs: [ {
-          type:  mongoose.Schema.Types.ObjectId,
-          ref: 'User'
-            } ]
+  joueurs: [ { idJoueur: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+               x: Number,
+               y: Number
+             }
+           ]
 });
 
 var modelEquipe=mongoose.model("Equipe",equipeSchema);
