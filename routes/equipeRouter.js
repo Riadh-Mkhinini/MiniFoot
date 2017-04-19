@@ -8,6 +8,7 @@ var routes=()=>{
   equipeRouter.post('/',equipeController.createEquipe);
   equipeRouter.get('/',equipeController.getAllEquipe);
   equipeRouter.get('/:idEquipe',equipeController.getEquipeById);
+  equipeRouter.put('/:idEquipe',equipeController.updateTeam);
   //update players of team
   equipeRouter.put('/:idEquipe/players',equipeController.updateJoueurs);
   //Rename type Player

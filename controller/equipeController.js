@@ -68,14 +68,13 @@ exports.createEquipe = (req,res) => {
 };
 
 exports.getAllEquipe = (req,res) => {
-  Equipe.find().populate({path:'createdBy'})
-      .exec(function(err, data) {
-        if (err) {
-          res.json({ success: false, message: 'Bad request' });
-        }else {
-          res.json(data);
-        }
-      });
+  Equipe.find({$text: {$search: `/${req.query.name}/`}}).exec((err,data)=>{
+    if (err) {
+      res.json({ success: false, message: 'Internal Server Error.' });
+    }else {
+      res.status(200).json(data);
+    }
+  });
 };
 
 exports.getEquipeById = (req,res) => {
@@ -96,6 +95,27 @@ exports.getEquipeById = (req,res) => {
           res.status(200).json(data);
         }
       });
+};
+
+exports.updateTeam= (req,res) => {
+    var idEquipe=req.params.idEquipe;
+    Equipe.findById(idEquipe,(err, data) => {
+     if (err) {
+       res.send({ success: false, message: 'Team not found.' });
+     } else {
+         console.log(data.name);
+        data.name = req.body.name;
+        data.description = req.body.description;
+        data.save(function(error){
+          console.log(data.name);
+          if(error)
+            res.send({ success: false, message: 'Internal Server Error.' });
+          else{
+              res.json(data);
+            }
+        });
+     }
+    });
 };
 
 exports.updateJoueurs = (req,res) => {
