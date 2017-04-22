@@ -53,6 +53,7 @@ exports.createEquipe = (req,res) => {
                  return res.json({ success: false, message: 'Internal Server Error.' });
              } else {
                  data.joueur.type = 'Responsable';
+                 data.equipe = equipe._id;
                  data.save(function(error) {
                      if (error) {
                          return res.json({ success: false, message: 'Internal Server Error.' });
@@ -98,6 +99,22 @@ exports.getEquipeById = (req,res) => {
       });
 };
 
+exports.getMembresEquipeById = (req,res) => {
+  idEquipe=req.params.idEquipe;
+  Equipe.findById(idEquipe).select('joueurs').populate
+    ({
+        path:'joueurs.idJoueur',
+        select: ['_id', 'firstname', 'lastname', 'photo', 'city', 'joueur']
+    })
+      .exec(function(err, data) {
+        if (err) {
+          res.status(500).send(err);
+        }else {
+          res.status(200).json(data);
+        }
+      });
+};
+
 exports.updateJoueurs = (req,res) => {
     var idEquipe=req.params.idEquipe;
     Equipe.findOne({ _id: idEquipe }, (err, data) => {
@@ -121,7 +138,7 @@ exports.RenameAdjointPlayer = (req,res) => {
        if (err) {
            return res.json({ success: false, message: 'Internal Server Error.' });
        } else {
-           data.joueur.type = 'Adjoint';
+           data.joueur.type = 'Sous Responsable';
            data.save(function(error) {
                if (error) {
                    return res.json({ success: false, message: 'Internal Server Error.' });
@@ -131,4 +148,78 @@ exports.RenameAdjointPlayer = (req,res) => {
            });
        }
     });
+};
+
+exports.renameCapitaineTeam = (req,res) => {
+    User.findOne({ _id: req.params.idJoueur }, function(err, user) {
+       if (err) {
+           return res.json({ success: false, message: 'Internal Server Error.' });
+       } else {
+           user.joueur.type = 'Responsable';
+           user.save(function(error) {
+               if (error) {
+                   return res.json({ success: false, message: 'Internal Server Error.' });
+               } else {
+                   User.findOne({ _id: req.params.idCapitaine }, function(err, player) {
+                      if (err) {
+                          return res.json({ success: false, message: 'Internal Server Error.' });
+                      } else {
+                          player.joueur.type = 'Joueur';
+                          player.save(function(error) {
+                              if (error) {
+                                  return res.json({ success: false, message: 'Internal Server Error.' });
+                              } else {
+                                      Equipe.findOneAndUpdate({ _id: req.params.idEquipe }, { "$set": { "createdBy": req.params.idJoueur } }, function(err,equipe) {
+                                          if (err) {
+                                              return res.json({ success: false, message: 'Internal Server Error.' });
+                                          } else {
+                                              return res.json({ success: true, message: equipe });
+                                          }
+                                      });
+                              }
+                            });
+                      }
+                    });
+              }
+           });
+        }
+      });
+};
+
+exports.quitEquipe = (req,res) => {
+    Equipe.update( { _id: req.params.idEquipe }, { $pull: { joueurs: { idJoueur: req.params.idJoueur } } } ).then(function(result){
+        User.findOne({ _id: req.params.idJoueur }, function(err, data){
+           if (err) {
+               return res.json({ success: false, message: 'Internal Server Error.' });
+           } else {
+               data.joueur.type = 'Joueur';
+               data.equipe = undefined;
+               data.save(function(error) {
+                   if (error) {
+                       return res.json({ success: false, message: 'Internal Server Error.' });
+                   }else {
+                       return res.json(data);
+                   }
+               });
+           }
+        });
+    },function(error){
+      res.json({ success: false, message: 'Internal Server Error.' });
+    });
+};
+
+exports.updateEquipe = (req,res) => {
+    Equipe.find({ _id:  req.params.idEquipe }, function (err, data) {
+        if (err) {
+            return res.json({ success: false, message: 'Internal Server Error.' });
+        } else {
+            data.save(function (err, equipe) {
+                if (err) {
+                    return res.json({ success: false, message: 'Internal Server Error.' });
+                } else {
+                    return res.json({ success: true, message: equipe });
+                }
+            });
+        }
+});
 };
