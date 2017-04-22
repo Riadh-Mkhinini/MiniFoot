@@ -99,23 +99,15 @@ exports.getEquipeById = (req,res) => {
 
 exports.updateTeam= (req,res) => {
     var idEquipe=req.params.idEquipe;
-    Equipe.findById(idEquipe,(err, data) => {
-     if (err) {
-       res.send({ success: false, message: 'Team not found.' });
-     } else {
-         console.log(data.name);
-        data.name = req.body.name;
-        data.description = req.body.description;
-        data.save(function(error){
-          console.log(data.name);
-          if(error)
-            res.send({ success: false, message: 'Internal Server Error.' });
-          else{
-              res.json(data);
-            }
-        });
-     }
-    });
+    Equipe.findOneAndUpdate({ _id:idEquipe },
+       { "$set": { "name": req.body.name, "adresse": req.body.adresse, "description": req.body.description}})
+    .exec(function(err, data){
+   if(err) {
+           res.send({ success: false, message: 'Internal Server Error.' });
+   } else {
+            res.json({success: true, message: 'Team update'});
+   }
+});
 };
 
 exports.updateJoueurs = (req,res) => {
