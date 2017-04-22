@@ -4,7 +4,7 @@ var ObjectId = Schema.ObjectId;
 var User=require('./users').modelUser;
 
 var equipeSchema=new Schema({
-  name:{type:String, required:true},
+  name:{type:String, required:true },
   adresse:String,
   logo:String,
   description:String,
@@ -20,5 +20,6 @@ var equipeSchema=new Schema({
            ]
 });
 
+equipeSchema.index({name: 'text'});
 var modelEquipe=mongoose.model("Equipe",equipeSchema);
 module.exports = modelEquipe;
