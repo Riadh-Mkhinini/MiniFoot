@@ -39,12 +39,13 @@ var authRouter=require('./routes/authRouter')();
 var friendsRouter=require('./routes/friendsRouter')();
 var roomRouter=require('./routes/roomRouter')();
 var equipeRouter=require('./routes/equipeRouter')();
-
+var notificationRouter=require('./routes/notificationRouter')();
 
 app.use('/api',authRouter);
 app.use('/api/friends',friendsRouter);
 app.use('/api/equipe',equipeRouter);
 app.use('/api/rooms', roomRouter);
+app.use('/api/notification', notificationRouter)
 
 app.get('/api',passport.authenticate('jwt',{session:false}),function(req,res){
   res.send("hello");

@@ -29,7 +29,12 @@ exports.getAllUsers = (req,res) => {
 
 exports.getUserById = (req,res) => {
   idUser=req.params.idUser;
-  User.findById(idUser,(err,data)=>{
+  User.findById(idUser).populate
+    ({
+        path:'equipe',
+        select: ['_id', 'name', 'adresse', 'description', 'createdBy', 'logo']
+    })
+    .exec(function(err, data) {
     if (err) {
       res.status(500).json({ success: false, message: 'Internal Server Error.' });
     }else if (data) {

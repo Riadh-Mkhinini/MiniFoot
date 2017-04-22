@@ -1,5 +1,6 @@
 var mongoose=require('mongoose');
 var bcrypt=require('bcrypt-nodejs');
+var Equipe = require('./Equipe');
 
 var userSchema=new mongoose.Schema({
   firstname:{type:String, required:true},
@@ -12,12 +13,13 @@ var userSchema=new mongoose.Schema({
   password:{type:String,required:true},
   role:{type:String,enume:['Joueur','Manager'],default:'Joueur'},
   token:String,
+  equipe: { type: mongoose.Schema.Types.ObjectId, ref: 'Equipe' },
   joueur:{
       poste:String,
       taille:Number,
       poid:Number,
       age :Number,
-      type:{type:String,enume:['Joueur','Responsable','Adjoint'],default:'Joueur'}
+      type:{type:String,enume:['Joueur','Responsable','Sous Responsable'],default:'Joueur'}
   }
 });
 userSchema.index({firstname: 'text', lastname: 'text'});
