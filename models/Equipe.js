@@ -14,8 +14,8 @@ var equipeSchema=new Schema({
           ref: 'User'
         },
   joueurs: [ { idJoueur: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-               x: Number,
-               y: Number
+               x: {type : Number, default: 0 },
+               y: {type : Number, default: 0 }
              }
            ]
 });

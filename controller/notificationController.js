@@ -1,5 +1,5 @@
 var Notification = require('../models/Notification');
-var Friends = require('../models/Friends');
+var Equipe = require('../models/Equipe');
 var mongoose=require('mongoose');
 var User = require('../models/users');
 var gcm = require('node-gcm');
@@ -23,5 +23,47 @@ exports.sendNotificationTeam = function(req, res) {
   sender.sendNoRetry(message, { registrationIds: registrationIds }, function(err, response) {
     if(err) return res.json({ success: false });
     else   return res.json({ success: true });
+  });
+};
+
+exports.getNotificationPlayerTeam = function (req, res) {
+  Notification.find({ "rejoin.to": req.params.idUser }, null, { sort: { createdAt: -1 }}).populate('rejoin.from').exec(function(err,data) {
+    if (err) {
+      res.json({ success: false, message: 'Internal Server Error.' });
+    }else {
+      res.json(data);
+    }
+  });
+};
+
+exports.deleteNotificationPlayerTeam = function(req, res) {
+  Notification.remove({ _id: req.params.idNotification }, (err,notification) => {
+    if (err) {
+        return res.json({ success: false, message: 'Internal Server Error.' });
+    } else {
+        return res.json({ success: true, message: 'success delete invitation team.' });
+    }
+  });
+};
+
+exports.acceptNotificationPlayerTeam = function(req, res) {
+  Notification.findOneAndUpdate({ _id: req.params.idNotification }, {"$set": { "rejoin.accepted": true }}, (err,notification)=>{
+    if (err) {
+        return res.json({ success: false, message: 'Internal Server Error.' });
+    } else {
+        User.findOneAndUpdate({ _id: req.body.idUser }, {"$set": { equipe: req.body.idEquipe }}, (err,notification)=>{
+          if (err) {
+              return res.json({ success: false, message: 'Internal Server Error.' });
+          } else {
+              Equipe.findOneAndUpdate({ _id: req.body.idEquipe }, {"$push": { "joueurs": { idJoueur: req.body.idUser } }}, (err,notification)=>{
+                if (err) {
+                    return res.json({ success: false, message: 'Internal Server Error.' });
+                } else {
+                    return res.json({ success: true, message: 'Invitation accepted' });
+                }
+              });
+          }
+        });
+    }
   });
 };
