@@ -15,7 +15,8 @@ var notificationSchema=new Schema({
                     ref: 'User'
                   },
               accepted: { type: Boolean, default: false }
-          }
+          },
+  createdAt: { type : Date, default: Date.now }
 });
 
 var modelNotification = mongoose.model("Notification",notificationSchema);
