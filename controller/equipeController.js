@@ -22,6 +22,16 @@ exports.getPhoto=function (req, res) {
   fs.createReadStream(path.join('./teamUploads', req.params.id)).pipe(res);
 };
 
+exports.getImagesTeam=function (req, res) {
+  Photos.findOne({ equipe:req.params.idEquipe}).exec(function(err,data){
+    if (err) {
+      return res.json({ success: false, message: 'Equipe not found.' });
+    } else {
+      return res.json(data);
+    }
+});
+};
+
 exports.updatePhoto=function (req, res) {
   upload(req, res, function(err) {
     if(err) {

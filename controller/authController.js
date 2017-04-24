@@ -18,7 +18,7 @@ exports.userRegister=function (req,res) {
       city:'Tunisia',
       phone:55555555,
       joueur:{
-          poste:'Ajouter votre position sur le terrain',
+          poste:'Attaque',
           taille:0,
           poid:0,
           age :0,
