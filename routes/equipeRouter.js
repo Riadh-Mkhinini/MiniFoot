@@ -19,6 +19,9 @@ var routes=()=>{
   //logo upload
   equipeRouter.post('/teamUploads/:id',equipeController.updatePhoto);
   equipeRouter.get('/teamUploads/:id',equipeController.getPhoto);
+  // upload Photos
+  equipeRouter.post('/teamUploads/:id/photos',equipeController.addPhotos);
+  equipeRouter.get('/:idEquipe/photos',equipeController.getImagesTeam);
 
   return equipeRouter;
 };

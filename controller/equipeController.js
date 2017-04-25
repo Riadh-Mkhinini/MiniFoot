@@ -1,5 +1,6 @@
 var Equipe = require('../models/Equipe');
 var User = require('../models/users');
+var Photos = require('../models/Photos');
 var mongoose=require('mongoose');
 var multer  = require('multer');
 var path = require('path');
@@ -15,9 +16,20 @@ var storage = multer.diskStorage({
 });
 
 var upload = multer({storage: storage}).single('photo');
+var uploadMultiple = multer({storage: storage}).array('photo', 10);
 
 exports.getPhoto=function (req, res) {
   fs.createReadStream(path.join('./teamUploads', req.params.id)).pipe(res);
+};
+
+exports.getImagesTeam=function (req, res) {
+  Photos.findOne({ equipe:req.params.idEquipe}).exec(function(err,data){
+    if (err) {
+      return res.json({ success: false, message: 'Equipe not found.' });
+    } else {
+      return res.json(data);
+    }
+});
 };
 
 exports.updatePhoto=function (req, res) {
@@ -36,6 +48,21 @@ exports.updatePhoto=function (req, res) {
   });
 };
 
+exports.addPhotos=function (req, res) {
+  var idEquipe=req.params.idEquipe;
+  uploadMultiple(req, res, function(err) {
+    if(err) {
+      return err;
+    }
+    console.log(req.file);
+    Photos.find({ equipe:idEquipe}).exec(function(err,data){
+      if (err) {
+        return res.json({ success: false, message: 'Equipe not found.' });
+      } else {
+      }
+  });
+});
+};
 
 exports.createEquipe = (req,res) => {
   let equipe=new Equipe(req.body);
@@ -58,7 +85,9 @@ exports.createEquipe = (req,res) => {
                      if (error) {
                          return res.json({ success: false, message: 'Internal Server Error.' });
                      }else {
-                         return res.json({ success: true, message: equipe });
+                       var photos= new Photos({ equipe: data.equipe });
+                       photos.save((err)=>{err : console.log(err);});
+                       return res.json({ success: true, message: equipe });
                      }
                  });
              }
@@ -115,23 +144,15 @@ exports.getMembresEquipeById = (req,res) => {
 
 exports.updateTeam= (req,res) => {
     var idEquipe=req.params.idEquipe;
-    Equipe.findById(idEquipe,(err, data) => {
-     if (err) {
-       res.send({ success: false, message: 'Team not found.' });
-     } else {
-         console.log(data.name);
-        data.name = req.body.name;
-        data.description = req.body.description;
-        data.save(function(error){
-          console.log(data.name);
-          if(error)
-            res.send({ success: false, message: 'Internal Server Error.' });
-          else{
-              res.json(data);
-            }
-        });
-     }
-    });
+    Equipe.findOneAndUpdate({ _id:idEquipe },
+       { "$set": { "name": req.body.name, "adresse": req.body.adresse, "description": req.body.description}})
+    .exec(function(err, data){
+   if(err) {
+           res.send({ success: false, message: 'Internal Server Error.' });
+   } else {
+            res.json({success: true, message: 'Team update'});
+   }
+});
 };
 
 exports.updateJoueurs = (req,res) => {
