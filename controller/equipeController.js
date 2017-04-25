@@ -86,8 +86,7 @@ exports.getEquipeById = (req,res) => {
         select: ['_id', 'firstname', 'lastname', 'photo']
     }).populate
     ({
-        path:'joueurs.idJoueur',
-        select: ['_id', 'firstname', 'lastname', 'photo']
+        path:'joueurs.idJoueur'
     })
       .exec(function(err, data) {
         if (err) {

@@ -1,7 +1,11 @@
 /*jshint esversion: 6 */
+var Notification = require('../models/Notification');
+var Equipe = require('../models/Equipe');
 var Friends = require('../models/Friends');
 var Message = require('../models/Message');
 var Room = require('../models/Room');
+var gcm = require('node-gcm');
+const API_KEY = 'AAAA8Hxw8z8:APA91bFkCNJccW6C8RPY9A4S5zxsxsASqlnGc5CRgLsb4WEhPxYg7H0HfTnc4MkkmUVNsZfpzevIWifsN6G0jFXciF3EcP9yAMZqWKHBvEQj14bfKWM0bUMHu4azUkcqIf9i_g5vlITZ';
 
 var routes=(io)=>{
   let clients = [];
@@ -11,7 +15,6 @@ var routes=(io)=>{
       });
       socket.on('add_user', function(idUser) {
         clients.push(idUser);
-        //clients.push('58d8f0b9ae995e2330f9ca0a');
       });
       socket.on('list_connectee', function(idUser) {
           clients = clients.filter( onlyUnique );
@@ -55,6 +58,28 @@ var routes=(io)=>{
               });
           });
       });
+      socket.on('invitationEquipe', function(notify) {
+          let tokens = [];
+          notify.users.forEach((item) => {
+              tokens.push(item.token);
+              var notification = new Notification({
+                  rejoin: {from: notify.idEquipe, to: item }
+              });
+              notification.save((err) => {(err) ? console.log(err) : socket.broadcast.emit(item._id, notification);});
+          });
+          var message = new gcm.Message({
+              data: {
+                title : notify.title,
+                message : "Vous a envoyé une invitation de rejoindre son équipe"
+              }
+          });
+          var sender = new gcm.Sender(API_KEY);
+          var registrationIds = tokens;
+          sender.sendNoRetry(message, { registrationIds: registrationIds }, function(err, response) {
+            if(err)
+                console.log(err);
+          });
+      })
   });
 };
 
