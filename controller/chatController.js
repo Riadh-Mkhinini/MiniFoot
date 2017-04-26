@@ -1,5 +1,6 @@
 /*jshint esversion: 6 */
 var Notification = require('../models/Notification');
+var RejoindreTeam = require('../models/RejoindreTeam');
 var Equipe = require('../models/Equipe');
 var Friends = require('../models/Friends');
 var Message = require('../models/Message');
@@ -80,6 +81,18 @@ var routes=(io)=>{
                 console.log(err);
           });
       })
+      socket.on('rejoindreTeam', function(rejoin){
+        var rejoindreTeam = new RejoindreTeam({
+          rejoindre: {from: rejoin.idUser, to: rejoin.idEquipe }
+        });
+        rejoindreTeam.save(function(err) {
+          if (err) {
+            console.log(err);
+          }else{
+              (err) ? console.log(err) : socket.broadcast.emit(rejoin.idEquipe, rejoindreTeam);
+            }
+          });
+        });
   });
 };
 
