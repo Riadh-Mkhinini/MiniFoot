@@ -82,8 +82,8 @@ exports.rejoindreTeam = function(req, res) {
       });
   };
 
-  exports.acceptNotificationRejoindre= function(req, res) {
-    RejoindreTeam.findOneAndUpdate({ _id: req.params.idRejoindre}, {"$set": { "rejoindre.accepted": true }}, (err,rejoindre)=>{
+  exports.acceptNotificationRejoindreTeam = function(req, res) {
+    RejoindreTeam.findOneAndUpdate({ _id: req.params.idRejoindreTeam}, {"$set": { "rejoindre.accepted": true }}, (err,rejoindre)=>{
       if (err) {
           return res.json({ success: false, message: 'Internal Server Error.' });
       } else {
@@ -100,6 +100,15 @@ exports.rejoindreTeam = function(req, res) {
                 });
             }
           });
+      }
+    });
+  };
+  exports.deleteNotificationRejoindreTeam = function(req, res) {
+    Notification.remove({ _id: req.params.idRejoindreTeam }, (err,rejoindre) => {
+      if (err) {
+          return res.json({ success: false, message: 'Internal Server Error.' });
+      } else {
+          return res.json({ success: true, message: 'success delete invitation team.' });
       }
     });
   };

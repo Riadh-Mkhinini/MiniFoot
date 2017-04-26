@@ -10,7 +10,9 @@ var routes = () => {
   notificationRouter.delete('/:idNotification/rejected', notificationController.deleteNotificationPlayerTeam);
   notificationRouter.put('/:idNotification/accepted', notificationController.acceptNotificationPlayerTeam);
   notificationRouter.post('/from/:idUser/to/:idEquipe', notificationController.rejoindreTeam);
-  notificationRouter.put('', notificationController.rejoindreTeam);
+  notificationRouter.put('', notificationController.acceptNotificationRejoindreTeam);
+  notificationRouter.delete('', notificationController.deleteNotificationRejoindreTeam);
+
   return notificationRouter;
 };
 module.exports=routes;
