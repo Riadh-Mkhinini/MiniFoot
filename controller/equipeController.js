@@ -29,7 +29,7 @@ exports.getImagesTeam=function (req, res) {
     } else {
       return res.json(data);
     }
-});
+  });
 };
 
 exports.updatePhoto=function (req, res) {
@@ -60,8 +60,8 @@ exports.addPhotos=function (req, res) {
         return res.json({ success: false, message: 'Equipe not found.' });
       } else {
       }
+    });
   });
-});
 };
 
 exports.createEquipe = (req,res) => {
@@ -142,26 +142,42 @@ exports.getMembresEquipeById = (req,res) => {
       });
 }
 
+exports.getFormationEquipeById = (req,res) => {
+  idEquipe=req.params.idEquipe;
+  Equipe.findById(idEquipe).select('formation').populate
+    ({
+        path:'formation.idJoueur',
+        select: ['_id', 'firstname', 'photo']
+    })
+      .exec(function(err, data) {
+        if (err) {
+          res.status(500).send(err);
+        }else {
+          res.status(200).json(data);
+        }
+      });
+}
+
 exports.updateTeam= (req,res) => {
     var idEquipe=req.params.idEquipe;
     Equipe.findOneAndUpdate({ _id:idEquipe },
        { "$set": { "name": req.body.name, "adresse": req.body.adresse, "description": req.body.description}})
     .exec(function(err, data){
-   if(err) {
-           res.send({ success: false, message: 'Internal Server Error.' });
-   } else {
-            res.json({success: true, message: 'Team update'});
-   }
-});
+       if(err) {
+               res.send({ success: false, message: 'Internal Server Error.' });
+       } else {
+                res.json({success: true, message: 'Team update'});
+       }
+    });
 };
 
 exports.updateJoueurs = (req,res) => {
-    var idEquipe=req.params.idEquipe;
+    var idEquipe = req.params.idEquipe;
     Equipe.findOne({ _id: idEquipe }, (err, data) => {
      if (err) {
        res.send({ success: false, message: 'Internal Server Error.' });
      } else {
-         data.joueurs = req.body.joueurs;
+         data.formation = req.body.formation;
          data.save((err) => {
            if (err) {
              res.json({ success: false, message: 'Bad Request.' });

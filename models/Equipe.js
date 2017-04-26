@@ -13,11 +13,12 @@ var equipeSchema=new Schema({
           type:  mongoose.Schema.Types.ObjectId,
           ref: 'User'
         },
-  joueurs: [ { idJoueur: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-               x: {type : Number, default: 0 },
-               y: {type : Number, default: 0 }
-             }
-           ]
+  joueurs: [ { idJoueur: { type: mongoose.Schema.Types.ObjectId, ref: 'User' } }],
+  formation: [ { idJoueur: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+                 pan: { x: { type : Number, default: 0 }, y: { type : Number, default: 0 } }
+               }
+             ]
+
 });
 
 equipeSchema.index({name: 'text'});

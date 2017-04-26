@@ -10,8 +10,10 @@ var routes=()=>{
   equipeRouter.get('/:idEquipe',equipeController.getEquipeById);
   equipeRouter.get('/:idEquipe/membres',equipeController.getMembresEquipeById);
   equipeRouter.put('/:idEquipe',equipeController.updateTeam);
+  //formation equipe
+  equipeRouter.get('/:idEquipe/formation',equipeController.getFormationEquipeById);
+  equipeRouter.put('/:idEquipe/formation',equipeController.updateJoueurs);
   //update players of team
-  equipeRouter.put('/:idEquipe/players',equipeController.updateJoueurs);
   equipeRouter.put('/:idEquipe/players/:idJoueur/delete',equipeController.quitEquipe)
   //Rename type Player
   equipeRouter.put('/:idUser/rename',equipeController.RenameAdjointPlayer);
