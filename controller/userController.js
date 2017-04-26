@@ -47,7 +47,6 @@ exports.getUserById = (req,res) => {
 
 exports.updatePhoto=function (req, res) {
   upload(req, res, function(err) {
-      console.log('service photo',req.file);
     if(err) {
       return err;
     }
@@ -69,7 +68,6 @@ exports.updateUser = (req,res) => {
   idUser=req.params.idUser;
   User.findById(idUser,(err,data)=>{
     let user=req.body;
-      console.log(user);
     if(user.id){
       delete user.id;
 
@@ -100,10 +98,8 @@ exports.updatePassword = (req,res) => {
           data.save((err)=>{
             if(err){
               res.json({ success: false, message: 'Bad Request.' });
-                console.log("errrrrrrrrrrr");
             }else{
               return res.json({ success: true, message: 'update password.' });
-              console.log("succsssssssssssss");
               }
           });
         }

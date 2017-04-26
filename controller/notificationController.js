@@ -1,4 +1,5 @@
 var Notification = require('../models/Notification');
+var RejoindreTeam = require('../models/RejoindreTeam');
 var Equipe = require('../models/Equipe');
 var mongoose=require('mongoose');
 var User = require('../models/users');
@@ -67,3 +68,38 @@ exports.acceptNotificationPlayerTeam = function(req, res) {
     }
   });
 };
+
+exports.rejoindreTeam = function(req, res) {
+  var rejoindreTeam = new RejoindreTeam({
+    rejoindre: {from: req.params.idUser, to: req.params.idEquipe }
+  });
+  rejoindreTeam.save(function(err) {
+    if (err) {
+      console.log(err);
+    }else{
+        rejoindreTeam.save((err) => {(err) ? console.log(err) : console.log(rejoindreTeam)});
+      }
+      });
+  };
+
+  exports.acceptNotificationRejoindre= function(req, res) {
+    RejoindreTeam.findOneAndUpdate({ _id: req.params.idRejoindre}, {"$set": { "rejoindre.accepted": true }}, (err,rejoindre)=>{
+      if (err) {
+          return res.json({ success: false, message: 'Internal Server Error.' });
+      } else {
+          User.findOneAndUpdate({ _id: req.body.idUser }, {"$set": { equipe: req.body.idEquipe }}, (err,rejoindre)=>{
+            if (err) {
+                return res.json({ success: false, message: 'Internal Server Error.' });
+            } else {
+                Equipe.findOneAndUpdate({ _id: req.body.idEquipe }, {"$push": { "joueurs": { idJoueur: req.body.idUser } }}, (err,rejoindre)=>{
+                  if (err) {
+                      return res.json({ success: false, message: 'Internal Server Error.' });
+                  } else {
+                      return res.json({ success: true, message: 'Invitation accepted' });
+                  }
+                });
+            }
+          });
+      }
+    });
+  };
