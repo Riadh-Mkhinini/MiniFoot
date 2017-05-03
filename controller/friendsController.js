@@ -27,7 +27,6 @@ exports.getFriends=function (req,res) {
 exports.deleteFriend = function(req, res) {
   let idUser = req.query.idUser;
   let idFriend = req.query.idFriend;
-  console.log(idUser, idFriend);
   NotificationFriends.remove({ _id: req.params.idInvitation }, (err,notification)=>{
     if (err) {
       res.json({ success: false, message: 'Internal Server Error.' });

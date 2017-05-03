@@ -15,7 +15,8 @@ var equipeSchema=new Schema({
         },
   joueurs: [ { idJoueur: { type: mongoose.Schema.Types.ObjectId, ref: 'User' } }],
   formation: [ { idJoueur: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-                 pan: { x: { type : Number, default: 0 }, y: { type : Number, default: 0 } }
+                 pan: { x: { type : Number, default: 0 }, y: { type : Number, default: 0 } },
+                 position: { top: { type : Number, default: 0 }, center: { type : Number, default: 0 }, bottom: { type : Number, default: 0 } }
                }
              ]
 

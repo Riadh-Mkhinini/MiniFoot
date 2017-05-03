@@ -40,12 +40,14 @@ var friendsRouter=require('./routes/friendsRouter')();
 var roomRouter=require('./routes/roomRouter')();
 var equipeRouter=require('./routes/equipeRouter')();
 var notificationRouter=require('./routes/notificationRouter')();
+var advertRouter=require('./routes/advertRouter')();
 
 app.use('/api',authRouter);
 app.use('/api/friends',friendsRouter);
 app.use('/api/equipe',equipeRouter);
 app.use('/api/rooms', roomRouter);
-app.use('/api/notification', notificationRouter)
+app.use('/api/notification', notificationRouter);
+app.use('/api/adverts', advertRouter);
 
 app.get('/api',passport.authenticate('jwt',{session:false}),function(req,res){
   res.send("hello");
