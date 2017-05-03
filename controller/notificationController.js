@@ -71,7 +71,8 @@ exports.acceptNotificationPlayerTeam = function(req, res) {
 
 exports.rejoindreTeam = function(req, res) {
   var rejoindreTeam = new RejoindreTeam({
-    rejoindre: {from: req.params.idUser, to: req.params.idEquipe }
+      from: req.params.idUser,
+      to: req.params.idEquipe
   });
   rejoindreTeam.save(function(err) {
     if (err) {
@@ -82,8 +83,8 @@ exports.rejoindreTeam = function(req, res) {
       });
   };
 
-  exports.acceptNotificationRejoindre= function(req, res) {
-    RejoindreTeam.findOneAndUpdate({ _id: req.params.idRejoindre}, {"$set": { "rejoindre.accepted": true }}, (err,rejoindre)=>{
+  exports.acceptNotificationRejoindreTeam = function(req, res) {
+    RejoindreTeam.findOneAndUpdate({ _id: req.params.idRejoindreTeam}, {"$set": { accepted: true }}, (err,rejoindre)=>{
       if (err) {
           return res.json({ success: false, message: 'Internal Server Error.' });
       } else {
@@ -103,3 +104,35 @@ exports.rejoindreTeam = function(req, res) {
       }
     });
   };
+
+exports.deleteNotificationRejoindreTeam = function(req, res) {
+  RejoindreTeam.remove({ _id: req.params.idRejoindreTeam }, (err,rejoindre) => {
+    if (err) {
+        return res.json({ success: false, message: 'Internal Server Error.' });
+    } else {
+        return res.json({ success: true, message: 'success delete rejoindre team.' });
+    }
+  });
+};
+
+exports.getNotificationRejoindre = function (req, res) {
+    RejoindreTeam.find({ to: req.params.idEquipe }, null, { sort: { createdAt: -1 }}).populate('from').exec(function(err,data) {
+      if (err) {
+        res.json({ success: false, message: 'Internal Server Error.' });
+      }else {
+        res.json(data);
+      }
+    });
+  };
+
+exports.getPlayerInTeam = function(req, res){
+  RejoindreTeam.findOne({from: req.params.idUser,to: req.params.idEquipe}).exec(function(err,data) {
+    if (err) {
+      res.json({ success: false, message: 'Internal Server Error.' });
+    }else if(data === null){
+      res.json({ success: false, message: 'Rejoindre not found' });
+    } else{
+      res.json({success: true, data});
+    }
+  });
+};

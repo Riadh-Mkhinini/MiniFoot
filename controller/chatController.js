@@ -84,7 +84,8 @@ var routes=(io)=>{
       })
       socket.on('rejoindreTeam', function(rejoin){
         var rejoindreTeam = new RejoindreTeam({
-          rejoindre: {from: rejoin.idUser, to: rejoin.idEquipe }
+          from: rejoin.idUser,
+          to: rejoin.idEquipe
         });
         rejoindreTeam.save(function(err) {
           if (err) {
