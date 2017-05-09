@@ -55,19 +55,28 @@ exports.userAuth=function(req, res) {
   }, function(err, user) {
     if (err) throw err;
     if (!user) {
-      res.json({ success: false, message: 'User not found !' });
+      return res.json({ success: false, message: 'User not found !' });
     } else {
       // Check if password matches
         if (!user.validPassword(req.body.password)) {
-            res.json({ success: false, message: 'Password did not match !' });
-          }
-        else{
+            return res.json({ success: false, message: 'Password did not match !' });
+        } else {
           user.token = req.body.token;
           user.save((err)=>{err : console.log(err);});
           var token = jwt.sign(user, config.secret, {
             expiresIn: 2592000 // in seconds
           });
-          res.json({ success: true, token: 'JWT ' + token, user: user });
+          if (user.type === 'Manager') {
+              Stade.findOne({ user: user._id }, function(err, stade) {
+                  if (err) {
+                      return res.json({ success: false, message: 'Server Error !' });
+                  } else {
+                      return res.json({ success: true, token: 'JWT ' + token, user: user, stade: stade });
+                  }
+              });
+          } else {
+              return res.json({ success: true, token: 'JWT ' + token, user: user });
+          }
         }
     }
   });
