@@ -15,9 +15,6 @@ var storage = multer.diskStorage({
 var upload = multer({storage: storage}).single('photo');
 
 exports.getAllUsers = (req,res) => {
-  //let pageNumber=req.query.page;
-  //.skip(pageNumber > 0 ? ((pageNumber-1)*nPerPage) : 0).limit(nPerPage)
-  //let nPerPage=10;
   User.find({$text: {$search: `/${req.query.name}/`}}).exec((err,data)=>{
     if (err) {
       res.json({ success: false, message: 'Internal Server Error.' });

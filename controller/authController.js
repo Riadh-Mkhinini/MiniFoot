@@ -3,6 +3,7 @@ var jwt = require('jsonwebtoken');
 var config = require('../config/config');
 var Skills = require('../models/Skills');
 var Friends = require('../models/Friends');
+var Stade = require('../models/Stade');
 
 exports.userRegister=function (req,res) {
   if(!req.body.email || !req.body.password) {
@@ -26,6 +27,9 @@ exports.userRegister=function (req,res) {
       }
     });
     newUser.password=newUser.generateHash(req.body.password);
+    if (req.body.role !== undefined) {
+        newUser.role = req.body.role;
+    }
     // save the user
     newUser.save(function(err) {
       if (err) {
@@ -35,6 +39,10 @@ exports.userRegister=function (req,res) {
         var friend= new Friends({ user: newUser._id });
         skill.save((err)=>{err : console.log(err);});
         friend.save((err)=>{err : console.log(err);});
+        if (newUser.type === 'Manager') {
+            var stade = new Stade({ user: newUser._id });
+            stade.save((err)=>{err : console.log(err);});
+        }
         return res.json({ success: true, message: 'Successfully created new user.' });
       }
     });
@@ -59,7 +67,7 @@ exports.userAuth=function(req, res) {
           var token = jwt.sign(user, config.secret, {
             expiresIn: 2592000 // in seconds
           });
-          res.status(200).json({ success: true, token: 'JWT ' + token, user: user });
+          res.json({ success: true, token: 'JWT ' + token, user: user });
         }
     }
   });
