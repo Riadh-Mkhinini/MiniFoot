@@ -86,6 +86,7 @@ exports.updateStade = (req,res) => {
 
 exports.getListAbonneesStade = (req,res) => {
     idStade=req.params.idStade;
+    console.log(idStade);
     Stade.findById(idStade).populate
       ({
           path:'abonnees.user',

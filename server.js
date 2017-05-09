@@ -61,7 +61,7 @@ app.use('/api/equipe',equipeRouter);
 app.use('/api/rooms', roomRouter);
 app.use('/api/notification', notificationRouter);
 app.use('/api/adverts', advertRouter);
-app.use('/api/stade', advertRouter);
+app.use('/api/stade', stadeRouter);
 
 app.get('/api',passport.authenticate('jwt',{session:false}),function(req,res){
   res.send("hello");
