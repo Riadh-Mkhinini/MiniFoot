@@ -39,7 +39,7 @@ exports.userRegister=function (req,res) {
         var friend= new Friends({ user: newUser._id });
         skill.save((err)=>{err : console.log(err);});
         friend.save((err)=>{err : console.log(err);});
-        if (newUser.type === 'Manager') {
+        if (newUser.role === 'Manager') {
             var stade = new Stade({ user: newUser._id });
             stade.save((err)=>{err : console.log(err);});
         }
@@ -66,7 +66,7 @@ exports.userAuth=function(req, res) {
           var token = jwt.sign(user, config.secret, {
             expiresIn: 2592000 // in seconds
           });
-          if (user.type === 'Manager') {
+          if (user.role === 'Manager') {
               Stade.findOne({ user: user._id }, function(err, stade) {
                   if (err) {
                       return res.json({ success: false, message: 'Server Error !' });
