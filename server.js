@@ -10,7 +10,6 @@ var config = require('./config/config');
 var app=express();
 const PORT=process.env.PORT || 3000;
 
-
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
