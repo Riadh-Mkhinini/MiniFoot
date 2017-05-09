@@ -3,6 +3,7 @@ var jwt = require('jsonwebtoken');
 var config = require('../config/config');
 var Skills = require('../models/Skills');
 var Friends = require('../models/Friends');
+var Stade = require('../models/Stade');
 
 exports.userRegister=function (req,res) {
   if(!req.body.email || !req.body.password) {
@@ -26,6 +27,9 @@ exports.userRegister=function (req,res) {
       }
     });
     newUser.password=newUser.generateHash(req.body.password);
+    if (req.body.role !== undefined) {
+        newUser.role = req.body.role;
+    }
     // save the user
     newUser.save(function(err) {
       if (err) {
@@ -35,6 +39,10 @@ exports.userRegister=function (req,res) {
         var friend= new Friends({ user: newUser._id });
         skill.save((err)=>{err : console.log(err);});
         friend.save((err)=>{err : console.log(err);});
+        if (newUser.role === 'Manager') {
+            var stade = new Stade({ user: newUser._id });
+            stade.save((err)=>{err : console.log(err);});
+        }
         return res.json({ success: true, message: 'Successfully created new user.' });
       }
     });
@@ -47,19 +55,28 @@ exports.userAuth=function(req, res) {
   }, function(err, user) {
     if (err) throw err;
     if (!user) {
-      res.json({ success: false, message: 'User not found !' });
+      return res.json({ success: false, message: 'User not found !' });
     } else {
       // Check if password matches
         if (!user.validPassword(req.body.password)) {
-            res.json({ success: false, message: 'Password did not match !' });
-          }
-        else{
+            return res.json({ success: false, message: 'Password did not match !' });
+        } else {
           user.token = req.body.token;
           user.save((err)=>{err : console.log(err);});
           var token = jwt.sign(user, config.secret, {
             expiresIn: 2592000 // in seconds
           });
-          res.status(200).json({ success: true, token: 'JWT ' + token, user: user });
+          if (user.role === 'Manager') {
+              Stade.findOne({ user: user._id }, function(err, stade) {
+                  if (err) {
+                      return res.json({ success: false, message: 'Server Error !' });
+                  } else {
+                      return res.json({ success: true, token: 'JWT ' + token, user: user, stade: stade });
+                  }
+              });
+          } else {
+              return res.json({ success: true, token: 'JWT ' + token, user: user });
+          }
         }
     }
   });

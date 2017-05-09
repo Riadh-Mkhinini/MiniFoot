@@ -40,13 +40,27 @@ var roomRouter=require('./routes/roomRouter')();
 var equipeRouter=require('./routes/equipeRouter')();
 var notificationRouter=require('./routes/notificationRouter')();
 var advertRouter=require('./routes/advertRouter')();
+var stadeRouter=require('./routes/stadeRouter')();
+var allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+    // intercept OPTIONS method
+    if ('OPTIONS' == req.method) {
+        res.sendStatus(200);
+    } else {
+        next();
+    }
+};
 
+app.use(allowCrossDomain);
 app.use('/api',authRouter);
 app.use('/api/friends',friendsRouter);
 app.use('/api/equipe',equipeRouter);
 app.use('/api/rooms', roomRouter);
 app.use('/api/notification', notificationRouter);
 app.use('/api/adverts', advertRouter);
+app.use('/api/stade', stadeRouter);
 
 app.get('/api',passport.authenticate('jwt',{session:false}),function(req,res){
   res.send("hello");
