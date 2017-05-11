@@ -23,7 +23,7 @@ exports.getPhotoStade=function (req, res) {
 };
 
 exports.getImagesStade=function (req, res) {
-  PhotosStade.findOne({ stade:req.params.idStade}).exec(function(err,data){
+  Stade.findOne({ _id:req.params.idStade}).exec(function(err,data){
     if (err) {
       return res.json({ success: false, message: 'Stade not found.' });
     } else {
@@ -44,7 +44,7 @@ exports.addStadePhotos=function (req, res) {
                 if (err) {
                     return res.json({ success: false, message: 'Stade not found.' });
                 } else {
-                    return res.json({ success: true});
+                    return res.json({ success: true, name: item.filename});
                 }
             });
     });
