@@ -1,6 +1,5 @@
 var User = require('../models/users');
 var Stade = require('../models/Stade');
-var PhotosStade = require('../models/PhotosStade');
 var mongoose=require('mongoose');
 var multer  = require('multer');
 var path = require('path');
