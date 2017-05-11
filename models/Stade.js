@@ -5,6 +5,8 @@ var User = require('./users').modelUser;
 
 var stadeSchema=new Schema({
   name: String,
+  adresse: String,
+  city: String,
   user:{ type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   createdAt: { type : Date },
   options: {

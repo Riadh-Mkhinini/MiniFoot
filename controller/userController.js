@@ -63,10 +63,10 @@ exports.getPhoto=function (req, res) {
 
 exports.updateUser = (req,res) => {
   idUser=req.params.idUser;
-  User.findById(idUser,(err,data)=>{
+  User.findOne({_id: idUser},(err,data)=>{
     let user=req.body;
-    if(user.id){
-      delete user.id;
+    if(user._id){
+      delete user._id;
 
       for(let x in user){
         data[x] = user[x];
@@ -76,9 +76,8 @@ exports.updateUser = (req,res) => {
           res.json({ success: false, message: 'Bad Request.' });
         }else{
           res.status(202).json(data);
-        }
+          }
       });
-
     }else{
         res.send({ success: false, message: 'User not found.' });
     }
