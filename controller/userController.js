@@ -76,7 +76,7 @@ exports.updateUser = (req,res) => {
           res.json({ success: false, message: 'Bad Request.' });
         }else{
           res.status(202).json(data);
-          }
+        }
       });
 
     }else{

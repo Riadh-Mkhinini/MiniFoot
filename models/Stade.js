@@ -14,10 +14,11 @@ var stadeSchema=new Schema({
                 arbitre: { type: Boolean, default: false }
            },
   tarton : String,
-  lagitude: Number,
+  latitude: Number,
   longitude: Number,
   notes: [{ user: ObjectId, value: Number }],
-  abonnees: [{ user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }}]
+  abonnees: [{ user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }}],
+  photos: [String]
 });
 
 var modelStade = mongoose.model("Stade",stadeSchema);
