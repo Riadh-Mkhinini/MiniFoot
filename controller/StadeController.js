@@ -64,10 +64,10 @@ exports.getStadeById = (req,res) => {
 
 exports.updateStade = (req,res) => {
     idStade=req.params.idStade;
-    Stade.findById(idStade, (err,data) => {
+    Stade.findOne({_id: idStade}, (err,data) => {
       let stade=req.body;
-      if(stade.id) {
-        delete stade.id;
+      if(stade._id) {
+        delete stade._id;
         for(let x in stade) {
           data[x] = stade[x];
         }
@@ -86,7 +86,6 @@ exports.updateStade = (req,res) => {
 
 exports.getListAbonneesStade = (req,res) => {
     idStade=req.params.idStade;
-    console.log(idStade);
     Stade.findById(idStade).populate
       ({
           path:'abonnees.user',
