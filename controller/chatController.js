@@ -6,6 +6,7 @@ var Friends = require('../models/Friends');
 var Message = require('../models/Message');
 var Room = require('../models/Room');
 var Advert = require('../models/Advert');
+var Match = require('../models/Match');
 var gcm = require('node-gcm');
 const API_KEY = 'AAAA8Hxw8z8:APA91bFkCNJccW6C8RPY9A4S5zxsxsASqlnGc5CRgLsb4WEhPxYg7H0HfTnc4MkkmUVNsZfpzevIWifsN6G0jFXciF3EcP9yAMZqWKHBvEQj14bfKWM0bUMHu4azUkcqIf9i_g5vlITZ';
 
@@ -84,17 +85,18 @@ var routes=(io)=>{
       })
       socket.on('rejoindreTeam', function(rejoin){
         var rejoindreTeam = new RejoindreTeam({
-          from: rejoin.idUser,
-          to: rejoin.idEquipe
+          joinTeam: { from: rejoin.idUser },
+          to: rejoin.idEquipe,
+          type: rejoin.type
         });
         rejoindreTeam.save(function(err) {
           if (err) {
             console.log(err);
-          }else{
+          } else {
               (err) ? console.log(err) : socket.broadcast.emit(rejoin.idEquipe, rejoindreTeam);
-            }
-          });
+          }
         });
+      });
       socket.on('add_advert', function(advert) {
           var newAdvert = new Advert(advert);
           newAdvert.save(function(err) {
@@ -103,6 +105,29 @@ var routes=(io)=>{
               } else {
                   socket.broadcast.emit('new_advert',advert);
               }
+          });
+      });
+      socket.on('add_match', function(match) {
+          var newMatch = new Match({
+              teamOne: match.teamOne._id,
+              teamTow: match.teamTow._id
+          });
+          var rejoindreTeam = new RejoindreTeam({
+            joinMatch: { from: match.teamOne._id },
+            to: match.teamTow._id,
+            type: match.type
+          });
+          newMatch.save(function(err) {
+              if (err) {
+                  console.log(err);
+              }
+          });
+          rejoindreTeam.save(function(err) {
+            if (err) {
+              console.log(err);
+            } else {
+                (err) ? console.log(err) : socket.broadcast.emit(match.teamTow._id, rejoindreTeam);
+            }
           });
       });
   });

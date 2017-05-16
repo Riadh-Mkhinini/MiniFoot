@@ -69,22 +69,9 @@ exports.acceptNotificationPlayerTeam = function(req, res) {
   });
 };
 
-exports.rejoindreTeam = function(req, res) {
-  var rejoindreTeam = new RejoindreTeam({
-      from: req.params.idUser,
-      to: req.params.idEquipe
-  });
-  rejoindreTeam.save(function(err) {
-    if (err) {
-      console.log(err);
-    }else{
-        rejoindreTeam.save((err) => {(err) ? console.log(err) : console.log(rejoindreTeam)});
-      }
-      });
-  };
 
   exports.acceptNotificationRejoindreTeam = function(req, res) {
-    RejoindreTeam.findOneAndUpdate({ _id: req.params.idRejoindreTeam}, {"$set": { accepted: true }}, (err,rejoindre)=>{
+    RejoindreTeam.findOneAndUpdate({ _id: req.params.idRejoindreTeam}, {"$set": { "joinTeam.accepted": true }}, (err,rejoindre)=>{
       if (err) {
           return res.json({ success: false, message: 'Internal Server Error.' });
       } else {
@@ -116,7 +103,10 @@ exports.deleteNotificationRejoindreTeam = function(req, res) {
 };
 
 exports.getNotificationRejoindre = function (req, res) {
-    RejoindreTeam.find({ to: req.params.idEquipe }, null, { sort: { createdAt: -1 }}).populate('from').exec(function(err,data) {
+    RejoindreTeam.find({ "to": req.params.idEquipe }, null, { sort: { "createdAt": -1 }})
+    .populate('joinTeam.from')
+    .populate('joinMatch.from')
+    .exec(function(err,data) {
       if (err) {
         res.json({ success: false, message: 'Internal Server Error.' });
       }else {
@@ -126,7 +116,7 @@ exports.getNotificationRejoindre = function (req, res) {
   };
 
 exports.getPlayerInTeam = function(req, res){
-  RejoindreTeam.findOne({from: req.params.idUser,to: req.params.idEquipe}).exec(function(err,data) {
+  RejoindreTeam.findOne({"joinTeam.from": req.params.idUser, "joinTeam.to": req.params.idEquipe}).exec(function(err,data) {
     if (err) {
       res.json({ success: false, message: 'Internal Server Error.' });
     }else if(data === null){
