@@ -23,5 +23,7 @@ var stadeSchema=new Schema({
   photos: [String]
 });
 
+stadeSchema.index({name: 'text'});
+
 var modelStade = mongoose.model("Stade",stadeSchema);
 module.exports = modelStade;
