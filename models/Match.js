@@ -9,7 +9,7 @@ var matchSchema = new Schema({
   teamTow: { type: mongoose.Schema.Types.ObjectId, ref: 'Equipe' },
   scoreOne: { type: Number, default: 0 },
   scoreTow: { type: Number, default: 0 },
-  createdAt: { type : Date },
+  createdAt: { type : Date, default: Date.now },
   stade: { type: mongoose.Schema.Types.ObjectId, ref: 'Stade' },
   etat: { type: Number, default: 0 },
   event: {
