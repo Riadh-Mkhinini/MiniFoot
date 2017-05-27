@@ -116,13 +116,11 @@ exports.getNotificationRejoindre = function (req, res) {
   };
 
 exports.getPlayerInTeam = function(req, res){
-  RejoindreTeam.findOne({"joinTeam.from": req.params.idUser, "joinTeam.to": req.params.idEquipe}).exec(function(err,data) {
+  RejoindreTeam.findOne({"joinTeam.from": req.params.idUser, "to": req.params.idEquipe}).exec(function(err,data) {
     if (err) {
-      res.json({ success: false, message: 'Internal Server Error.' });
-    }else if(data === null){
-      res.json({ success: false, message: 'Rejoindre not found' });
+      return res.json({ success: false, message: 'Internal Server Error.' });
     } else{
-      res.json({success: true, data});
+      return res.json({success: true, data});
     }
   });
 };

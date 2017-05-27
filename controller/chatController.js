@@ -110,24 +110,26 @@ var routes=(io)=>{
       socket.on('add_match', function(match) {
           var newMatch = new Match({
               teamOne: match.teamOne._id,
-              teamTow: match.teamTow._id
-          });
-          var rejoindreTeam = new RejoindreTeam({
-            joinMatch: { from: match.teamOne._id },
-            to: match.teamTow._id,
-            type: match.type
+              teamTow: match.teamTow._id,
+              stade: match.stade
           });
           newMatch.save(function(err) {
               if (err) {
                   console.log(err);
+              } else {
+                  var rejoindreTeam = new RejoindreTeam({
+                    joinMatch: { from: match.teamOne._id, match: newMatch._id },
+                    to: match.teamTow._id,
+                    type: match.type
+                  });
+                  rejoindreTeam.save(function(err) {
+                    if (err) {
+                      console.log(err);
+                    } else {
+                        (err) ? console.log(err) : socket.broadcast.emit(match.teamTow._id, rejoindreTeam);
+                    }
+                  });
               }
-          });
-          rejoindreTeam.save(function(err) {
-            if (err) {
-              console.log(err);
-            } else {
-                (err) ? console.log(err) : socket.broadcast.emit(match.teamTow._id, rejoindreTeam);
-            }
           });
       });
   });

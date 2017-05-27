@@ -15,7 +15,9 @@ var matchSchema = new Schema({
   event: {
     start: Date,
     end: Date
-  }
+  },
+  date: Date,
+  message: String
 });
 
 var modelMatch = mongoose.model("Matchs", matchSchema);

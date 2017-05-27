@@ -3,6 +3,7 @@ var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 var User = require('./users').modelUser;
 var Equipe = require('./Equipe');
+var Match = require('./Match');
 
 var rejoindreTeamSchema=new Schema({
     joinTeam: {
@@ -11,7 +12,8 @@ var rejoindreTeamSchema=new Schema({
     },
     joinMatch: {
         from:{ type: mongoose.Schema.Types.ObjectId, ref: 'Equipe' },
-        accepted: { type: Boolean, default: false }
+        accepted: { type: Boolean, default: false },
+        match: { type: mongoose.Schema.Types.ObjectId, ref: 'Match' }
     },
     to: { type: mongoose.Schema.Types.ObjectId, ref: 'Equipe' },
     createdAt: { type : Date, default: Date.now },

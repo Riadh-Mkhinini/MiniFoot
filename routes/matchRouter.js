@@ -8,8 +8,14 @@ var routes = () => {
   matchRouter.get('/:idStade', matchController.getAllEvents);
   matchRouter.delete('/:idMatch', matchController.deleteEvent);
   matchRouter.put('/:idMatch', matchController.updateEvent);
-
+  matchRouter.get('/:idEquipe', matchController.getMesMatchs);
+  matchRouter.get('/:idEquipe/myTeam', matchController.getMatchsMyEquipe);
+  matchRouter.delete('/:idMatch/delete', matchController.deleteMatchById);
+  matchRouter.put('/:idMatch/accept', matchController.acceptMatchById);
+  matchRouter.put('/:idMatch/reserver', matchController.reserverStade);
+  matchRouter.put('/:idMatch/score', matchController.addScoreMatch);
+  matchRouter.get('/:idStade/reserver', matchController.getEventReservation);
+  matchRouter.put('/:idMatch/reservation', matchController.acceptReservation);
   return matchRouter;
 };
-
 module.exports = routes;
