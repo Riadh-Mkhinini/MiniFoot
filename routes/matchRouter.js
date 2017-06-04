@@ -12,7 +12,7 @@ var routes = () => {
   matchRouter.put('/:idMatch/accept', matchController.acceptMatchById);
   matchRouter.put('/:idMatch/reserver', matchController.reserverStade);
   matchRouter.put('/:idMatch/score', matchController.addScoreMatch);
-
+  matchRouter.get('/:idEquipe/terminated', matchController.getMatchsTeamTerminated);
   return matchRouter;
 };
 

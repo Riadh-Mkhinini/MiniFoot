@@ -98,7 +98,11 @@ exports.createEquipe = (req,res) => {
 };
 
 exports.getAllEquipe = (req,res) => {
-  Equipe.find({$text: {$search: `/${req.query.name}/`}}).exec((err,data)=>{
+  Equipe.find({ $or: [{name: new RegExp(req.query.name, 'i')},
+                      {adresse: new RegExp(req.query.name, 'i')}
+                     ]})
+  .limit(10).skip(req.query.page * 10)
+  .exec((err,data)=>{
     if (err) {
       res.json({ success: false, message: 'Internal Server Error.' });
     }else {

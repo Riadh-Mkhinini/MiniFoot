@@ -18,9 +18,10 @@ var routes=(io)=>{
       });
       socket.on('add_user', function(idUser) {
         clients.push(idUser);
+        clients = clients.filter(onlyUnique);
       });
       socket.on('list_connectee', function(idUser) {
-          clients = clients.filter( onlyUnique );
+          clients = clients.filter(onlyUnique);
           var list = [];
           //finds list of users connectee
           Friends.findOne({ user: idUser }).populate('friends',['_id', 'firstname', 'lastname', 'email', 'photo'])
@@ -36,7 +37,7 @@ var routes=(io)=>{
                   });
               });
             }
-            console.log(list);
+            //console.log(list);
             socket.emit('list_connectee', list);
           });
       });
@@ -132,8 +133,13 @@ var routes=(io)=>{
               }
           });
       });
+      socket.on('reserver', function(notify) {
+          console.log(notify);
+          socket.broadcast.emit(notify.idStade, notify);
+      });
   });
 };
+
 
 function onlyUnique(value, index, self) {
   return self.indexOf(value) === index;

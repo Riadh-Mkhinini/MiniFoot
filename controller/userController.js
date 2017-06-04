@@ -15,7 +15,17 @@ var storage = multer.diskStorage({
 var upload = multer({storage: storage}).single('photo');
 
 exports.getAllUsers = (req,res) => {
-  User.find({$text: {$search: `/${req.query.name}/`}}).exec((err,data)=>{
+  User.find({ $or: [{firstname: new RegExp(req.query.name, 'i')},
+                    {lastname: new RegExp(req.query.name, 'i')},
+                    {'joueur.poste': new RegExp(req.query.name, 'i')}
+            ], role: 'Joueur' })
+  .limit(10).skip(req.query.page * 10)
+  .populate
+    ({
+        path:'equipe',
+        select: ['_id', 'name']
+    })
+  .exec((err,data)=>{
     if (err) {
       res.json({ success: false, message: 'Internal Server Error.' });
     }else {
@@ -23,7 +33,6 @@ exports.getAllUsers = (req,res) => {
     }
   });
 };
-
 exports.getUserById = (req,res) => {
   idUser=req.params.idUser;
   User.findById(idUser).populate
@@ -47,7 +56,6 @@ exports.updatePhoto=function (req, res) {
     if(err) {
       return err;
     }
-    console.log(req.file);
     User.findOneAndUpdate({_id:req.params.id},{$set:{photo:req.file.filename}},function (err,res) {
       if (err) {
         return res.status(404).json({ success: false, message: 'User not found.' });
@@ -63,20 +71,20 @@ exports.getPhoto=function (req, res) {
 
 exports.updateUser = (req,res) => {
   idUser=req.params.idUser;
-  User.findOne({_id: idUser},(err,data)=>{
+  User.findOne({ _id: idUser }, (err, data)=>{
     let user=req.body;
-    if(user._id){
+    if(user._id) {
       delete user._id;
 
       for(let x in user){
         data[x] = user[x];
       }
       data.save((err)=>{
-        if(err){
+        if(err) {
           res.json({ success: false, message: 'Bad Request.' });
-        }else{
+        } else {
           res.status(202).json(data);
-          }
+        }
       });
     }else{
         res.send({ success: false, message: 'User not found.' });

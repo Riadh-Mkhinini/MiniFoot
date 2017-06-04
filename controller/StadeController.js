@@ -22,8 +22,11 @@ var uploadMultiple = multer({storage: storage}).array('photo', 20);
 exports.getPhotoStade=function (req, res) {
   fs.createReadStream(path.join('./stadeUploads', req.params.id)).pipe(res);
 };
+
 exports.getAllStades = (req,res) => {
-  Stade.find({$text: {$search: `/${req.query.name}/`}}).populate({ path: 'user', select: ['firstname', 'lastname'] }).exec((err,data)=>{
+  Stade.find({ name: new RegExp(req.query.name, 'i')}).populate({ path: 'user', select: ['firstname', 'lastname'] })
+  .limit(5).skip(req.query.page * 5)
+  .exec((err,data)=>{
     if (err) {
       return res.json({ success: false, message: 'Internal Server Error.' });
     }else {

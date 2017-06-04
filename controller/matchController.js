@@ -93,7 +93,27 @@ exports.getMatchsMyEquipe = (req, res) => {
       }
     });
 };
-
+exports.getMatchsTeamTerminated = (req, res) => {
+  Match.find({$or: [{ teamOne :req.params.idEquipe }, { teamTow :req.params.idEquipe }], etat: 5 })
+    .sort({ createdAt: -1 })
+    .populate
+    ({
+      path: 'teamOne',
+      select: ['_id', 'name', 'logo']
+    })
+    .populate
+      ({
+        path: 'teamTow',
+        select: ['_id', 'name', 'logo']
+      })
+    .exec(function(err,data) {
+    if (err) {
+      return res.json({ success: false, message: 'Internal Server Error.' });
+    } else {
+      return res.json(data);
+    }
+  });
+};
 exports.deleteMatchById = function(req, res) {
   Match.remove({ _id: req.params.idMatch }, (err, match) => {
     if (err) {

@@ -12,7 +12,8 @@ var notificationFriendsSchema=new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
       },
-  accepted: { type: Boolean, default: false }
+  accepted: { type: Boolean, default: false },
+  createdAt: { type : Date, default: Date.now }
 });
 
 var modelNotificationFriends=mongoose.model("NotificationFriends",notificationFriendsSchema);
