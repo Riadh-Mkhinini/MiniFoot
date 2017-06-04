@@ -3,13 +3,85 @@ var RejoindreTeam = require('../models/RejoindreTeam');
 var mongoose=require('mongoose');
 
 exports.addEvents= (req, res) => {
- var match = new Match(req.body);
- match.save((err) => {
+  var match = new Match(req.body);
+  match.save((err) => {
    if(err){
      return res.json({success: false});
    }
      return res.json(match);
  });
+};
+
+exports.getAllEvents = (req,res) => {
+  var start = new Date();
+  var end = new Date();
+  if (req.query.date === 'today') {
+    start.setHours(0,0,0,0);
+    end.setHours(23,59,59,999);
+  }
+    Match.find({ stade: req.params.idStade, "createdAt": { "$gte": start, "$lt": end } })
+      .populate
+      ({
+          path:'teamOne',
+          select: ['_id', 'name']
+      }).populate
+        ({
+            path:'teamTow',
+            select: ['_id', 'name']
+        })
+      .exec(function(err, data) {
+          if (err) {
+            res.status(500).send(err);
+          }else {
+            res.status(200).json(data);
+          }
+      });
+};
+
+exports.getEventReservation = (req,res) => {
+    Match.find({ stade: req.params.idStade, "etat": 2 })
+      .populate
+      ({
+          path:'teamOne',
+          select: ['_id', 'name', 'logo']
+      }).populate
+        ({
+            path:'teamTow',
+            select: ['_id', 'name', 'logo']
+        })
+      .exec(function(err, data) {
+          if (err) {
+            res.status(500).send(err);
+          }else {
+            res.status(200).json(data);
+          }
+      });
+};
+
+exports.deleteEvent = (req, res) => {
+  idMatch = req.params.idMatch ;
+  Match.remove({ _id: idMatch }, (err,data) => {
+    if (err) {
+        return res.json({ success: false, message: 'Internal Server Error.' });
+    } else {
+       return res.json({ success: true, message: 'success delete match.' });
+    }
+  });
+};
+
+exports.updateEvent = (req, res) => {
+  idMatch = req.params.idMatch ;
+  Match.findById(idMatch,function(err,data){
+    if(err){
+        res.status(500).send(err);
+    }
+    else{
+      data.event.start = req.body.event.start;
+      data.event.end = req.body.event.end;
+      data.save();
+      res.json(data);
+    }
+  });
 };
 
 exports.getMesMatchs = (req, res) => {
@@ -164,4 +236,15 @@ exports.addScoreMatch = (req,res) => {
       }
        return res.send({ success:true, message:'score ajouter avec succssée'});
     });
+};
+
+exports.acceptReservation = (req, res) => {
+  idMatch = req.params.idMatch ;
+  Match.findOneAndUpdate({_id: idMatch},{"$set":{etat: 3, event: { start: req.body.event.start, end: req.body.event.end }}},function (err,response) {
+    if (err) {
+      return res.json({ success: false, message: 'Match not found.' });
+    } else {
+        return res.json({ success: true, message: response});
+    }
+  });
 };

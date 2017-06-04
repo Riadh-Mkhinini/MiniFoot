@@ -20,7 +20,9 @@ var stadeSchema=new Schema({
   longitude: { type: Number, default: 0},
   notes: [{ user: ObjectId, value: Number }],
   abonnees: [{ user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }}],
-  photos: [String]
+  photos: [String],
+  tarif: Number,
+  phone:Number
 });
 
 stadeSchema.index({name: 'text'});
