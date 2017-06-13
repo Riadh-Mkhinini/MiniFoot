@@ -42,23 +42,17 @@ var routes=(io)=>{
           });
       });
       socket.on('room', function(room) {
-        console.log(room);
           socket.on(room, function(data) {
-            console.log(room);
-            console.log(data);
             newMessage = new Message({
               text: data.text,
               createdAt: data.createdAt,
               user: data.user,
               idRoom: room
               });
-              Room.update( {_id: room}, { $set: { user: data.user }, message: data.text, createdAt: data.createdAt, vue: 0 } ).then(function(result){
-                newMessage.save((error) => {
+              newMessage.save((error) => {
                   newMessage._id = newMessage._id;
+                  console.log(room);
                   socket.broadcast.emit(room, newMessage);
-                });
-              },function(error){
-                console.log(error);
               });
           });
       });
@@ -74,7 +68,9 @@ var routes=(io)=>{
           var message = new gcm.Message({
               data: {
                 title : notify.title,
-                message : "Vous a envoyé une invitation de rejoindre son équipe"
+                message : "Vous a envoyé une invitation de rejoindre son équipe",
+                smallIcon: notify.logo,
+                tag: 'TEAM'
               }
           });
           var sender = new gcm.Sender(API_KEY);

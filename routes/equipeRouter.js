@@ -23,6 +23,7 @@ var routes=()=>{
   equipeRouter.get('/teamUploads/:id',equipeController.getPhoto);
   // upload Photos
   equipeRouter.post('/teamUploads/:id/photos',equipeController.addPhotos);
+  equipeRouter.delete('/teamUploads/:id/photos/:idPhoto',equipeController.deletePhotoTeam);
   equipeRouter.get('/:idEquipe/photos',equipeController.getImagesTeam);
 
   return equipeRouter;

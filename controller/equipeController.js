@@ -49,19 +49,27 @@ exports.updatePhoto=function (req, res) {
 };
 
 exports.addPhotos=function (req, res) {
-  var idEquipe=req.params.idEquipe;
-  uploadMultiple(req, res, function(err) {
+  upload(req, res, function(err) {
     if(err) {
       return err;
     }
-    console.log(req.file);
-    Photos.find({ equipe:idEquipe}).exec(function(err,data){
-      if (err) {
-        return res.json({ success: false, message: 'Equipe not found.' });
-      } else {
-      }
+    Photos.findOneAndUpdate({ equipe: req.params.id },{$push: { photos: req.file.filename}}, function(err,data){
+        if (err) {
+            return res.json({ success: false, message: 'Stade not found.' });
+        } else {
+            return res.json({imageName: req.file.filename});
+        }
     });
   });
+};
+exports.deletePhotoTeam=function (req, res) {
+    Photos.findOneAndUpdate({ equipe: req.params.id },{$pull: { photos: req.params.idPhoto}}, function(err,data){
+        if (err) {
+            return res.json({ success: false, message: 'Stade not found.' });
+        } else {
+            return res.json(data);
+        }
+    });
 };
 
 exports.createEquipe = (req,res) => {

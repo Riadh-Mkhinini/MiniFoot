@@ -10,6 +10,7 @@ var routes=()=>{
   roomRouter.get('/:idUser/discussion/:idFriend', roomController.getDiscussionByIdFriend);
   roomRouter.get('/:idRoom/messages/:page', roomController.getMessagesByIdRoom);
   roomRouter.put('/:idRoom/vue', roomController.changeRoomToVue);
+  roomRouter.put('/:idRoom/update', roomController.updateRoom);
 
   return roomRouter;
 };

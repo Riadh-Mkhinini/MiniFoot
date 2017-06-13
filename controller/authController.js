@@ -33,7 +33,7 @@ exports.userRegister=function (req,res) {
     // save the user
     newUser.save(function(err) {
       if (err) {
-        return res.json({ success: false, message: 'That email address already exists.'});
+        return res.json({ success: false, message: 'Adresse email déjà existe !'});
       }else{
         var skill= new Skills({ noteTo: newUser._id });
         var friend= new Friends({ user: newUser._id });
@@ -55,11 +55,11 @@ exports.userAuth=function(req, res) {
   }, function(err, user) {
     if (err) throw err;
     if (!user) {
-      return res.json({ success: false, message: 'User not found !' });
+      return res.json({ success: false, message: 'Utilisateur non trouvé !' });
     } else {
       // Check if password matches
         if (!user.validPassword(req.body.password)) {
-            return res.json({ success: false, message: 'Password did not match !' });
+            return res.json({ success: false, message: 'Mot de passe incorrect !' });
         } else {
           user.token = req.body.token;
           user.save((err)=>{err : console.log(err);});

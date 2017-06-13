@@ -8,7 +8,7 @@ var routes = () => {
   matchRouter.get('/:idStade', matchController.getAllEvents);
   matchRouter.delete('/:idMatch', matchController.deleteEvent);
   matchRouter.put('/:idMatch', matchController.updateEvent);
-  matchRouter.get('/:idEquipe', matchController.getMesMatchs);
+  matchRouter.get('/:idEquipe/myMatchs', matchController.getMesMatchs);
   matchRouter.get('/:idEquipe/myTeam', matchController.getMatchsMyEquipe);
   matchRouter.delete('/:idMatch/delete', matchController.deleteMatchById);
   matchRouter.put('/:idMatch/accept', matchController.acceptMatchById);
