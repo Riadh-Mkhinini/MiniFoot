@@ -172,7 +172,7 @@ exports.getMatchStadeByDay = (req,res) => {
     var end = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
     start.setHours(0,0,0,0);
     end.setHours(23,59,59,999);
-    Match.find({ stade: req.params.idStade, 'event.start': { "$gte": start, "$lt": end } })
+    Match.find({ stade: req.params.idStade, 'event.start': { "$gte": start, "$lt": end }, etat: 3 })
         .select(['event', 'teamOne', 'teamTow', 'scoreOne', 'scoreTow'])
         .populate({ path: 'teamOne', select: ['_id', 'name', 'logo'] })
         .populate({ path: 'teamTow', select: ['_id', 'name', 'logo'] })

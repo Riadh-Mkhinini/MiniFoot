@@ -7,38 +7,45 @@ var Message = require('../models/Message');
 var Room = require('../models/Room');
 var Advert = require('../models/Advert');
 var Match = require('../models/Match');
+var User = require('../models/users');
 var gcm = require('node-gcm');
 const API_KEY = 'AAAA8Hxw8z8:APA91bFkCNJccW6C8RPY9A4S5zxsxsASqlnGc5CRgLsb4WEhPxYg7H0HfTnc4MkkmUVNsZfpzevIWifsN6G0jFXciF3EcP9yAMZqWKHBvEQj14bfKWM0bUMHu4azUkcqIf9i_g5vlITZ';
 
+let clients = [];
 var routes=(io)=>{
-  let clients = [];
   io.of('/api').on('connection', function(socket) {
       socket.on('disconnect', function(idUser) {
           clients.splice(clients.indexOf(idUser), 1);
+          console.log('disconnect', clients);
       });
       socket.on('add_user', function(idUser) {
         clients.push(idUser);
         clients = clients.filter(onlyUnique);
+        console.log('new User online', clients);
       });
       socket.on('list_connectee', function(idUser) {
-          clients = clients.filter(onlyUnique);
-          var list = [];
+          //var list = [];
           //finds list of users connectee
-          Friends.findOne({ user: idUser }).populate('friends',['_id', 'firstname', 'lastname', 'email', 'photo'])
+          Friends.findOne({ "user": idUser })
+          .populate
+            ({
+              path: 'friends',
+              select: ['_id', 'firstname', 'lastname', 'email', 'photo'],
+              match: { _id: { $in: clients }}
+            })
           .exec(function(err,data) {
             if (err) {
                 console.log(err);
             } else {
-              clients.forEach(function(item) {
+              /*clients.forEach(function(item) {
                  data.friends.forEach(function(person) {
                     if (new String(person._id).valueOf() === new String(item).valueOf()) {
                       list.push(person);
                     }
                   });
-              });
-            }
-            //console.log(list);
-            socket.emit('list_connectee', list);
+              });*/
+              socket.emit('list_connectee', data.friends);
+            };
           });
       });
       socket.on('room', function(room) {
@@ -51,10 +58,35 @@ var routes=(io)=>{
               });
               newMessage.save((error) => {
                   newMessage._id = newMessage._id;
-                  console.log(room);
                   socket.broadcast.emit(room, newMessage);
               });
           });
+      });
+      socket.on('newRoomCreated', function(room) {
+          User.findById(room.users[0]).select(['_id', 'firstname', 'lastname', 'photo'])
+            .exec(function(err, user1) {
+            if (err) {
+                console.log('Internal Server Error.');
+            } else {
+                User.findById(room.users[1]).select(['_id', 'firstname', 'lastname', 'photo'])
+                  .exec(function(err, user2) {
+                  if (err) {
+                      console.log('Internal Server Error.');
+                  } else {
+                      let tabUsers = [];
+                      tabUsers.push(user1);
+                      tabUsers.push(user2);
+                      let newRooms = {
+                          users: tabUsers,
+                          message : 'Envoyer votre premier message',
+                          user: { _id: user2._id, name: '', avatar: ''},
+                          vue: 0
+                      }
+                      console.log(newRooms);
+                      socket.broadcast.emit(room.users[0], newRooms);
+                      socket.broadcast.emit(room.users[1], newRooms);
+                  }});
+            }});
       });
       socket.on('invitationEquipe', function(notify) {
           let tokens = [];
@@ -130,8 +162,10 @@ var routes=(io)=>{
           });
       });
       socket.on('reserver', function(notify) {
-          console.log(notify);
           socket.broadcast.emit(notify.idStade, notify);
+      });
+      socket.on('invitation_friend', function(idUser) {
+          socket.broadcast.emit(idUser, 'Friend');
       });
   });
 };

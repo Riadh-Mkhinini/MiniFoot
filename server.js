@@ -39,8 +39,8 @@ var friendsRouter=require('./routes/friendsRouter')();
 var roomRouter=require('./routes/roomRouter')();
 var equipeRouter=require('./routes/equipeRouter')();
 var notificationRouter=require('./routes/notificationRouter')();
-var advertRouter=require('./routes/advertRouter')();
-var stadeRouter=require('./routes/stadeRouter')();
+var advertRouter=require('./routes/AdvertRouter')();
+var stadeRouter=require('./routes/StadeRouter')();
 var matchRouter=require('./routes/matchRouter')();
 
 var allowCrossDomain = function(req, res, next) {

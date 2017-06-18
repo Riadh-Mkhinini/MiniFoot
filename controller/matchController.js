@@ -11,7 +11,25 @@ exports.addEvents= (req, res) => {
      return res.json(match);
  });
 };
-
+exports.getAllEventsManger = (req,res) => {
+  Match.find({ stade: req.params.idStade, etat: 3 })
+    .populate
+    ({
+        path:'teamOne',
+        select: ['_id', 'name']
+    }).populate
+      ({
+          path:'teamTow',
+          select: ['_id', 'name']
+      })
+    .exec(function(err, data) {
+        if (err) {
+          return res.status(500).send(err);
+        }else {
+          return res.status(200).json(data);
+        }
+    });
+};
 exports.getAllEvents = (req,res) => {
   var start = new Date();
   var end = new Date();
